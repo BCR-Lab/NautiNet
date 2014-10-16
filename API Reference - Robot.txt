@@ -1,0 +1,62 @@
+NautiNet API Reference
+Robot Section
+Version 1.0
+2014-10-14
+Author: Said Achmiz
+
+
+CLASS: NNAlgaeSensor
+********************
+
+METHOD: getSensorValue
+----------------------
+
+Description:
+	This method does one of { query the world object, query hardware sensors }, depending on whether the robot control program is running in "real" or "simulated" mode. It then constructs an NNAlgaeSensorValue object with the appropriate fields (TO BE DETERMINED) and returns it.
+	
+Preconditions:
+	1. The "world" member must contain a valid reference to an NNWorld object.
+
+Method Definition:
+	NNAlgaeSensorValue getSensorValue();
+	
+Postconditions:
+	none.
+
+
+CLASS: NNCollisionSensor
+************************
+
+METHOD: getSensorValue
+----------------------
+
+Description:
+	This method does one of { query the world object, query hardware sensors }, depending on whether the robot control program is running in "real" or "simulated" mode. It then constructs an NNCollisionSensorValue object with the appropriate fields (TO BE DETERMINED) and returns it.
+	
+Preconditions:
+	1. The "world" member must contain a valid reference to an NNWorld object.
+
+Method Definition:
+	NNCollisionSensorValue getSensorValue();
+	
+Postconditions:
+	none.
+
+
+CLASS: NNOpticalSensor
+**********************
+
+METHOD: getSensorValue
+----------------------
+
+Description:
+	This method does one of { query the world object, query hardware sensors }, depending on whether the robot control program is running in "real" or "simulated" mode. It then constructs an NNOpticalSensorValue object with the appropriate fields (TO BE DETERMINED) and returns it.
+	
+Preconditions:
+	1. The "world" member must contain a valid reference to an NNWorld object.
+
+Method Definition:
+	NNOpticalSensorValue getSensorValue();
+	
+Posconditions:
+	none.
