@@ -25,6 +25,9 @@ struct NNAlgaeSensorValue
 		{ }
 };
 
+// TEMPORARY - forward declaration of NNWorld class, so that NNAlgaeSensor can compile, for testing purposes.
+class NNWorld;
+
 /*
  An NNAlgaeSensor keeps and updates an NNAlgaeSensorValue object, which represents the last known value for the gradient of algae concentration around the robonaut.
  */
@@ -41,13 +44,13 @@ class NNAlgaeSensor
 		// CONSTRUCTORS & DESTRUCTORS
 		
 		// Default constructor.
-		NNWorld();
+		NNAlgaeSensor();
 		
 		// Copy constructor.
-		NNWorld(const NNWorld& right);
+		NNAlgaeSensor(const NNAlgaeSensor& right);
 		
 		// Destructor.
-		~NNWorld();
+		~NNAlgaeSensor();
 		
 		// FUNCTIONS
 		
