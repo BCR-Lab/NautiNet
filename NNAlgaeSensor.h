@@ -15,7 +15,7 @@ struct NNAlgaeSensorValue
 	double z_pos_dir_concentration;
 	double z_neg_dir_concentration;
 
-	NNAlgaeSensorValue(double xpos = 0, double xneg = 0, double ypos = 0, double yneg = 0, zpos = 0, zneg = 0) :
+	NNAlgaeSensorValue(double xpos = 0, double xneg = 0, double ypos = 0, double yneg = 0, double zpos = 0, double zneg = 0) :
 		x_pos_dir_concentration(xpos),
 		x_neg_dir_concentration(xneg),
 		y_pos_dir_concentration(ypos),

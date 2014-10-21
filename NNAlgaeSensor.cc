@@ -1,4 +1,5 @@
 #include "NNAlgaeSensor.h"
+#include <cstring>
 
 using namespace std;
 
@@ -55,32 +56,32 @@ void NNAlgaeSensor::updateSensorValue()
 	
 	// Positive X direction.
 	sensor_cone_base_center.x += sensor_cone_height;
-	lastSensorValue.x_pos_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_base_radius);
+//	lastSensorValue.x_pos_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.x = position.x;
 	
 	// Negative X direction.
 	sensor_cone_base_center.x -= sensor_cone_height;
-	lastSensorValue.x_neg_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_base_radius);
+//	lastSensorValue.x_neg_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.x = position.x;
 	
 	// Positive Y direction.
 	sensor_cone_base_center.y += sensor_cone_height;
-	lastSensorValue.y_pos_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_base_radius);
+//	lastSensorValue.y_pos_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.y = position.y;
 	
 	// Negative Y direction.
 	sensor_cone_base_center.y -= sensor_cone_height;
-	lastSensorValue.y_neg_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_base_radius);
+//	lastSensorValue.y_neg_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.y = position.y;
 	
 	// Positive Z direction.
 	sensor_cone_base_center.z += sensor_cone_height;
-	lastSensorValue.z_pos_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_base_radius);
+//	lastSensorValue.z_pos_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.z = position.z;
 	
 	// Negative Z direction.
 	sensor_cone_base_center.z -= sensor_cone_height;
-	lastSensorValue.z_neg_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_base_radius);
+//	lastSensorValue.z_neg_dir_concentration = world->getConcentrationInCone(position, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.z = position.z;
 	
 	// Done! All six direction components of the lastSensorValue is now updated.
