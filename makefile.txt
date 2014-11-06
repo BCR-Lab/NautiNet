@@ -1,6 +1,0 @@
-all: AlgaeSensor
-
-AlgaeSensor: NNAlgaeSensor.o
-
-NNAlgaeSensor.o: NNAlgaeSensor.cc NNAlgaeSensor.h
-	g++ -c NNAlgaeSensor.cc
