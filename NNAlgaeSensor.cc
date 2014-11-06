@@ -58,38 +58,55 @@ void NNAlgaeSensor::updateSensorValue()
 	// Positive X direction.
 	sensor_cone_apex.x += sensor_offset;
 	sensor_cone_base_center.x += sensor_offset + sensor_cone_height;
-//	lastSensorValue.x_pos_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	lastSensorValue.x_pos_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.x = sensor_cone_apex.x = position.x;
 	
 	// Negative X direction.
 	sensor_cone_apex.x -= sensor_offset;
 	sensor_cone_base_center.x -= sensor_offset + sensor_cone_height;
-//	lastSensorValue.x_neg_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	lastSensorValue.x_neg_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.x = sensor_cone_apex.x = position.x;
 	
 	// Positive Y direction.
 	sensor_cone_apex.y += sensor_offset;
 	sensor_cone_base_center.y += sensor_offset + sensor_cone_height;
-//	lastSensorValue.y_pos_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	lastSensorValue.y_pos_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.y = sensor_cone_apex.y = position.y;
 	
 	// Negative Y direction.
 	sensor_cone_apex.y -= sensor_offset;
 	sensor_cone_base_center.y -= sensor_offset + sensor_cone_height;
-//	lastSensorValue.y_neg_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	lastSensorValue.y_neg_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.y = sensor_cone_apex.y = position.y;
 	
 	// Positive Z direction.
 	sensor_cone_apex.z += sensor_offset;
 	sensor_cone_base_center.z += sensor_offset + sensor_cone_height;
-//	lastSensorValue.z_pos_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	lastSensorValue.z_pos_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.z = sensor_cone_apex.z = position.z;
 	
 	// Negative Z direction.
 	sensor_cone_apex.z -= sensor_offset;
 	sensor_cone_base_center.z -= sensor_offset + sensor_cone_height;
-//	lastSensorValue.z_neg_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	lastSensorValue.z_neg_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 	sensor_cone_base_center.z = sensor_cone_apex.z = position.z;
 	
 	// Done! All six direction components of the lastSensorValue is now updated.
+}
+
+void NNAlgaeSensor::setWorld(NNWorld* world)
+{
+	this->world = world;
+}
+
+void NNAlgaeSensor::printSensorValue(ostream& out)
+{
+	out << "Current sensor value is:" << endl;
+	out << "Positive x: " << lastSensorValue.x_pos_dir_concentration << endl;
+	out << "Negative x: " << lastSensorValue.x_neg_dir_concentration << endl;
+	out << "Positive y: " << lastSensorValue.y_pos_dir_concentration << endl;
+	out << "Negative y: " << lastSensorValue.y_neg_dir_concentration << endl;
+	out << "Positive z: " << lastSensorValue.z_pos_dir_concentration << endl;
+	out << "Negative z: " << lastSensorValue.z_neg_dir_concentration << endl;
+	
 }

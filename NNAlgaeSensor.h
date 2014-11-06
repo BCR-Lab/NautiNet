@@ -1,6 +1,10 @@
 #ifndef NN_ALGAE_SENSOR_H
 #define NN_ALGAE_SENSOR_H
 
+#include <iostream>
+
+using namespace std;
+
 /*
  An NNAlgaeSensorValue object represents the gradient of algae concentration around the robonaut. It has six values: concentration in the positive z direction, concentration in the negative z direction, and likewise for x and y.
 	
@@ -25,8 +29,17 @@ struct NNAlgaeSensorValue
 		{ }
 };
 
-// TEMPORARY - forward declaration of NNWorld class, so that NNAlgaeSensor can compile, for testing purposes.
-class NNWorld;
+// TEMPORARY - A simplified World class, for testing.
+#include "Point3D.h"
+
+class NNWorld
+{
+	public:
+		double getConcentrationInCone(Point3D sensor_cone_apex, Point3D sensor_cone_base_center, double radius)
+		{
+			return 1.0;
+		}
+};
 
 /*
  An NNAlgaeSensor keeps and updates an NNAlgaeSensorValue object, which represents the last known value for the gradient of algae concentration around the robonaut.
@@ -37,8 +50,8 @@ class NNAlgaeSensor
 		NNWorld* world;
 		NNAlgaeSensorValue lastSensorValue;
 		
-		void updateSensorValue();
-	
+		NNAlgaeSensorValue getSensorValue();
+		
 	public:
 		
 		// CONSTRUCTORS & DESTRUCTORS
@@ -54,7 +67,11 @@ class NNAlgaeSensor
 		
 		// FUNCTIONS
 		
-		NNAlgaeSensorValue getSensorValue();
+		void updateSensorValue();
+	
+		void setWorld(NNWorld* world);
+		
+		void printSensorValue(ostream& out = cout);
 };
 
 #endif
