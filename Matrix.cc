@@ -1,14 +1,47 @@
+#include <algorithm>
 #include "Matrix.h"
+using namespace std;
 
 Matrix::Matrix(int rows, int cols) :
 	rows(rows),
 	cols(cols)
 {
+	// Check for proper matrix size.
+	if(rows <= 0 || cols <= 0)
+	{
+		// This is an error! Handle it somehow.
+		;
+	}
+
 	data = new matrix_data_type*[rows];
 	
 	for(int i = 0; i < rows; i++)
 	{
 		data[i] = new matrix_data_type[cols];
+	}
+}
+
+Matrix::Matrix(int rows, int cols, const double** values) :
+	rows(rows),
+	cols(cols)
+{
+	// Check for proper matrix size.
+	if(rows <= 0 || cols <= 0)
+	{
+		// This is an error! Handle it somehow.
+		;
+	}
+
+	data = new matrix_data_type*[rows];
+	
+	for(int i = 0; i < rows; i++)
+	{
+		data[i] = new matrix_data_type[cols];
+		
+		for(int j = 0; j < cols; j++)
+		{
+			data[i][j] = values[i][j];
+		}
 	}
 }
 
@@ -164,7 +197,31 @@ void Matrix::transpose()
 	if(rows != cols)
 		;
 	
-	for(i = 0; i < rows/2; i++)
-		for(j = 0; j < cols/2; j++)
+	for(int i = 0; i < rows/2; i++)
+		for(int j = 0; j < cols/2; j++)
 			swap(data[i][j], data[j][i]);
+}
+
+matrix_data_type& Matrix::operator()(const unsigned int& row, const unsigned int& col)
+{
+	// Check for out-of-bounds.
+	if(row >= rows || col >= cols)
+	{
+		// This is an error! Handle it somehow.
+		;
+	}
+	
+	return data[row][col];
+}
+
+const matrix_data_type& Matrix::operator()(const unsigned int& row, const unsigned int& col) const
+{
+	// Check for out-of-bounds.
+	if(row >= rows || col >= cols)
+	{
+		// This is an error! Handle it somehow.
+		;
+	}
+	
+	return data[row][col];
 }

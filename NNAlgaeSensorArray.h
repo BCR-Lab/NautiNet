@@ -56,6 +56,9 @@ class NNAlgaeSensorArray
 		// The robot which owns this sensor array.
 		NNRobot* robot;
 		
+		// Reference to a world object. Used for simulation.
+		NNWorld* world;
+	
 		// The most recent sensor value.
 		NNAlgaeSensorGradient lastSensorGradientReading;
 		

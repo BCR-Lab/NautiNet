@@ -10,6 +10,7 @@ using namespace std;
 NNAlgaeSensorArray::NNAlgaeSensorArray()
 {
 	robot = NULL;
+	world = NULL;
 }
 
 // FUNCTIONS

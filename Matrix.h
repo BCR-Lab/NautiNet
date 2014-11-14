@@ -16,14 +16,11 @@ class Matrix
 	
 	public:
 	
-		// CONSTRUCTORS
+		// CONSTRUCTORS & DESTRUCTOR
 		
 		Matrix(int rows, int cols);
-//		Matrix(double[][] values);
-		
+		Matrix(int rows, int cols, const double** values);
 		Matrix(const Matrix& right);
-		
-		// DESTRUCTOR
 		
 		~Matrix();
 				
@@ -39,6 +36,10 @@ class Matrix
 		// Boolean operators.
 		bool operator==(const Matrix& right) const;
 		bool operator!=(const Matrix& right) const;
+		
+		// Access operator (and const version).
+		matrix_data_type& operator()(const unsigned int& row, const unsigned int& col);
+		const matrix_data_type& operator()(const unsigned int& row, const unsigned int& col) const;
 		
 		// ACCESSORS
 		
