@@ -1,5 +1,5 @@
 #include "Matrix.h"
-#include "MatrixUtility.h"
+#include "MatrixFunctions.h"
 #include <cmath>
 using namespace std;
 
