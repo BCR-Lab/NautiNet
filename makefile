@@ -1,7 +1,7 @@
 unit_tests: matrix_test algae_sensor_test
 
 
-matrix_test: matrix_test.o Matrix.o MatrixFunctions.O
+matrix_test: matrix_test.o Matrix.o MatrixFunctions.o
 	g++ -o matrix_test matrix_test.o Matrix.o MatrixFunctions.o
 	
 matrix_test.o: matrix_test.cc Matrix.h MatrixFunctions.h
