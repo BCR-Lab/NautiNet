@@ -3,12 +3,54 @@
 #include "Point3D.h"
 #include "MatrixFunctions.h"
 #include "NNRobot.h"
+// #include "NNWorld.h"
 
 NNAlgaeSensor::NNAlgaeSensor(Matrix orientation, double offset) :
 	orientation(orientation),
 	offset(offset)
 {
 	lastSensorValue = 0.0;
+}
+
+NNAlgaeSensor::NNAlgaeSensor(NN_ALGAE_SENSOR_ORIENTATION_PRESET orientation, double offset) :
+	orientation(Matrix(IDENTITY, 4)),
+	offset(offset)
+{
+	lastSensorValue = 0.0;
+	
+	switch(orientation)
+	{
+		case FRONT:
+		default:
+			// Front-facing sensor is the default case and is represented by the identity matrix.
+			// (Front = facing toward positive X, no rotation around any axis.)
+			break;
+		case BACK:
+			// Represented as rotation of pi radians (180 degrees) around vertical axis,
+			// or half-circle yaw.
+			this->orientation = make3DRotationMatrix(YAW, M_PI);
+			break;
+		case RIGHT:
+			// Represented as rotation of 3*pi/2 radians (270 degrees) around vertical axis,
+			// or three-quarter-circle yaw.
+			this->orientation = make3DRotationMatrix(YAW, 3*M_PI/2);
+			break;
+		case LEFT:
+			// Represented as rotation of pi/2 radians (90 degrees) around vertical axis,
+			// or quarter-circle yaw.
+			this->orientation = make3DRotationMatrix(YAW, M_PI/2);
+			break;
+		case TOP:
+			// Represented as rotation of pi/2 radians (90 degrees) around lateral axis,
+			// or quarter-circle pitch.
+			this->orientation = make3DRotationMatrix(PITCH, M_PI/2);
+			break;
+		case BOTTOM:
+			// Represented as rotation of 3*pi/2 radians (270 degrees) around lateral axis,
+			// or three-quarter-circle pitch.
+			this->orientation = make3DRotationMatrix(PITCH, 3*M_PI/2);
+			break;
+	}
 }
 
 void NNAlgaeSensor::setRobot(NNRobot* robot)
