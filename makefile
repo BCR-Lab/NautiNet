@@ -8,8 +8,8 @@ matrix_test.o: matrix_test.cc Matrix.h MatrixFunctions.h
 	g++ -c matrix_test.cc
 
 
-algae_sensor_test: algae_sensor_test.o NNAlgaeSensor.o Matrix.o MatrixFunctions.o
-	g++ -o algae_sensor_test algae_sensor_test.o NNAlgaeSensor.o Matrix.o MatrixFunctions.o
+algae_sensor_test: algae_sensor_test.o NNAlgaeSensor.o Matrix.o MatrixFunctions.o NNRobot.o
+	g++ -o algae_sensor_test algae_sensor_test.o NNAlgaeSensor.o Matrix.o MatrixFunctions.o NNRobot.o
 
 algae_sensor_test.o: algae_sensor_test.cc NNAlgaeSensor.h Matrix.h
 	g++ -c algae_sensor_test.cc
@@ -17,6 +17,9 @@ algae_sensor_test.o: algae_sensor_test.cc NNAlgaeSensor.h Matrix.h
 
 NNAlgaeSensor.o: NNAlgaeSensor.cc NNAlgaeSensor.h Point3D.h
 	g++ -c NNAlgaeSensor.cc
+	
+NNRobot.o: NNRobot.cc NNRobot.h Matrix.h Point3D.h
+	g++ -c NNRobot.cc
 	
 Matrix.o: Matrix.cc Matrix.h
 	g++ -c Matrix.cc

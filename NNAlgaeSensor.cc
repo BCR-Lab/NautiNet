@@ -23,44 +23,37 @@ void NNAlgaeSensor::setWorld(NNWorld* world)
 
 void NNAlgaeSensor::updateSensorValue()
 {
-/*
 	// *** NOTE: All measurements are in meters. ***
 	
 	// Create a point vector to represent the sensor's position.
 	// (This will serve as the base of our sensor cone.)
-	Matrix sensor_position(1, 4, 0);
+	Matrix sensor_position(pointVectorFromPoint(Point3D(0, 0, 0)));
+	
+	// We also need a point vector for the center of the sensor cone base.
+	Matrix sensor_cone_base_center_matrix(pointVectorFromPoint(Point3D(SENSOR_CONE_HEIGHT, 0, 0)));
 
 	// Get the robot's current position and convert robot position into translation matrix.
-	Point3D robot_position_point = robot->getPosition();
-	Matrix robot_position(IDENTITY, 4);
+	Matrix robot_position(translationMatrixFromPoint(robot->getPosition()));
 	
 	// Get the robot's current orientation (a rotation matrix).
-	Matrix robot_orientation = robot->getOrientation();
+	Matrix robot_orientation(robot->getOrientation());
 	
-	// Generate translation matrix representing the sensor's offset.
-	// (This is based on the sensor's orientation and its offset value.)
-	Matrix sensor_offset(IDENTITY, 4);
+	// Generate translation matrix representing the sensor's offset (from the robot center).
+	Matrix sensor_offset(translationMatrixFromPoint(Point3D(offset, 0, 0)));
 	
-	// The size of the cone in which we get the algae density (that is, the luminescence value in the relevant frequency) is not something we will have to define in an actual, running-on-hardware implementation (it will simply depend on the sensor's capabilities), but for simulation purposes we do have to know it.
-	double sensor_cone_height = 0.1;	// 10 cm, in meters.
-	double sensor_cone_angle = 54.0 * M_PI / 180.0;	// 54 degrees, in radians.
-	double sensor_cone_radius = sensor_cone_height * tan (sensor_cone_angle / 2);	// Also in meters.
-	
-	// We have to figure out the location of the center of the sensor cone's base; we then pass the three parameters (cone apex (tip); cone base center; cone radius) to the World object's getConcentrationInCone method.
+	// Apply all relevant transformations to the two key points of the sensor cone (apex and base center).
+	sensor_position *= Matrix(IDENTITY, 4) * sensor_offset * orientation * robot_orientation * robot_position;
+	sensor_cone_base_center_matrix *= Matrix(IDENTITY, 4) * sensor_offset * orientation * robot_orientation * robot_position;
 
-	// Apply all relevant transformations to the sensor position.	
-	sensor_position *= Matrix(IDENTITY,4) * sensor_offset * orientation * robot_orientation * robot_position;
+	// The radius of the (base of the) sensor cone is derived from the height and angle.
+	double sensor_cone_radius = SENSOR_CONE_HEIGHT * tan (SENSOR_CONE_ANGLE / 2);
 
-	// Convert 
-	Point3D sensor_cone_apex = position;
-	Point3D sensor_cone_base_center(position.x, position.y, position.z);
+	// Convert back to points, for passing to the world object.
+	Point3D sensor_cone_apex(pointFromPointVector(sensor_position));
+	Point3D sensor_cone_base_center(pointFromPointVector(sensor_cone_base_center_matrix));
 	
-	// Positive X direction.
-	sensor_cone_apex.x += sensor_offset;
-	sensor_cone_base_center.x += sensor_offset + sensor_cone_height;
-	lastSensorGradientReading.x_pos_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
-	sensor_cone_base_center.x = sensor_cone_apex.x = position.x;
-*/
+	// Get the algae concentration in the specified cone.
+//	lastSensorValue = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 }
 
 double NNAlgaeSensor::getSensorValue()
@@ -70,12 +63,5 @@ double NNAlgaeSensor::getSensorValue()
 
 void NNAlgaeSensor::printSensorValue(ostream& out)
 {
-// 	out << "Current sensor value is:" << endl;
-// 	out << "Positive x: " << lastSensorGradientReading.x_pos_dir_concentration << endl;
-// 	out << "Negative x: " << lastSensorGradientReading.x_neg_dir_concentration << endl;
-// 	out << "Positive y: " << lastSensorGradientReading.y_pos_dir_concentration << endl;
-// 	out << "Negative y: " << lastSensorGradientReading.y_neg_dir_concentration << endl;
-// 	out << "Positive z: " << lastSensorGradientReading.z_pos_dir_concentration << endl;
-// 	out << "Negative z: " << lastSensorGradientReading.z_neg_dir_concentration << endl;	
+	out << "Current sensor value is: " << lastSensorValue << endl;
 }
-

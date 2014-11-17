@@ -56,3 +56,27 @@ Matrix make3DScaleMatrix(double xScale, double yScale, double zScale)
 	
 	return s;
 }
+
+Matrix translationMatrixFromPoint(Point3D p)
+{
+	return make3DTranslationMatrix(p.x, p.y, p.z);
+}
+
+Matrix pointVectorFromPoint(Point3D p)
+{
+	Matrix m(1, 4);
+
+	m(0,0) = p.x;
+	m(0,1) = p.y;
+	m(0,2) = p.z;
+	m(0,3) = 1.0;
+	
+	return m;
+}
+
+Point3D pointFromPointVector(Matrix m)
+{
+	Point3D p(m(0,0), m(0,1), m(0,2));
+	
+	return p;
+}
