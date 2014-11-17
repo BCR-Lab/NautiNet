@@ -13,6 +13,6 @@ class NNRobot
 	public:
 		Point3D getPosition();
 		Matrix getOrientation();
-}
+};
 
 #endif

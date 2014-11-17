@@ -2,26 +2,37 @@
 #define MATRIX_H
 
 #include <cstring>
+#include <iostream>
 using namespace std;
 
-typedef double matrix_data_type;
+typedef double matrix_data_t;
+
+typedef enum
+{
+	IDENTITY,
+	ZERO,
+} MATRIX_PRESET_VALUE;
 
 class Matrix
 {
 	private:
-		matrix_data_type** data;
+		matrix_data_t** data;
 		
-		int rows;
-		int cols;
+		size_t rows;
+		size_t cols;
+		
+		void allocate();
+		void zeroOutData();
 	
 	public:
 	
 		// CONSTRUCTORS & DESTRUCTOR
 		
-		Matrix(int rows, int cols);
-		Matrix(int rows, int cols, const double** values);
+		Matrix(size_t rows, size_t cols);
+		Matrix(size_t rows, size_t cols, double* values);
 		Matrix(const Matrix& right);
-		
+		Matrix(MATRIX_PRESET_VALUE preset, size_t size);
+				
 		~Matrix();
 				
 		// OPERATORS
@@ -37,9 +48,9 @@ class Matrix
 		bool operator==(const Matrix& right) const;
 		bool operator!=(const Matrix& right) const;
 		
-		// Access operator (and const version).
-		matrix_data_type& operator()(const unsigned int& row, const unsigned int& col);
-		const matrix_data_type& operator()(const unsigned int& row, const unsigned int& col) const;
+		// Access operators (and const versions).
+		matrix_data_t& operator()(const size_t& row, const size_t& col);
+		const matrix_data_t& operator()(const size_t& row, const size_t& col) const;
 		
 		// ACCESSORS
 		
@@ -49,6 +60,8 @@ class Matrix
 		// FUNCTIONS
 		
 		void transpose();
+		
+		void print(ostream& out = cout);
 };
 
 #endif

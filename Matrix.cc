@@ -2,9 +2,7 @@
 #include "Matrix.h"
 using namespace std;
 
-Matrix::Matrix(int rows, int cols) :
-	rows(rows),
-	cols(cols)
+void Matrix::allocate()
 {
 	// Check for proper matrix size.
 	if(rows <= 0 || cols <= 0)
@@ -12,69 +10,109 @@ Matrix::Matrix(int rows, int cols) :
 		// This is an error! Handle it somehow.
 		;
 	}
-
-	data = new matrix_data_type*[rows];
 	
-	for(int i = 0; i < rows; i++)
+	// Deallocate existing data grid.
+	if(data != NULL)
 	{
-		data[i] = new matrix_data_type[cols];
+		for(size_t i = 0; i < rows; i++)
+			delete [ ] data[i];
+			
+		delete [ ] data;
+		
+		data = NULL;
+	}
+
+	// Allocate new data grid.
+	data = new matrix_data_t*[rows];
+	
+	for(size_t i = 0; i < rows; i++)
+	{
+		data[i] = new matrix_data_t[cols];
 	}
 }
 
-Matrix::Matrix(int rows, int cols, const double** values) :
-	rows(rows),
-	cols(cols)
+void Matrix::zeroOutData()
 {
-	// Check for proper matrix size.
-	if(rows <= 0 || cols <= 0)
+	if(data == NULL)
 	{
 		// This is an error! Handle it somehow.
 		;
 	}
 
-	data = new matrix_data_type*[rows];
-	
-	for(int i = 0; i < rows; i++)
+	for(size_t i = 0; i < rows; i++)
 	{
-		data[i] = new matrix_data_type[cols];
-		
-		for(int j = 0; j < cols; j++)
+		// Zero out all matrix values.
+		for(size_t j = 0; j < cols; j++)
 		{
-			data[i][j] = values[i][j];
+			data[i][j] = 0;
+		}
+	}
+}
+
+Matrix::Matrix(MATRIX_PRESET_VALUE preset, size_t size) :
+	rows(size),
+	cols(size),
+	data(NULL)
+{
+	allocate();
+	
+	switch(preset)
+	{
+		case IDENTITY:
+			zeroOutData();
+			for(size_t i = 0; i < size; i++)
+				data[i][i] = 1;
+			break;
+		case ZERO:
+		default:
+			zeroOutData();
+			break;
+	}
+}
+
+Matrix::Matrix(size_t rows, size_t cols) :
+	rows(rows),
+	cols(cols),
+	data(NULL)
+{
+	allocate();
+}
+
+Matrix::Matrix(size_t rows, size_t cols, double* values) :
+	rows(rows),
+	cols(cols),
+	data(NULL)
+{
+	allocate();
+	
+	for(size_t i = 0; i < rows; i++)
+	{
+		for(size_t j = 0; j < cols; j++)
+		{
+			data[i][j] = values[rows*i + j];
 		}
 	}
 }
 
 Matrix::Matrix(const Matrix& right) :
 	rows(right.rows),
-	cols(right.cols)
+	cols(right.cols),
+	data(NULL)
 {
-	if(rows == 0 || cols == 0)
+	allocate();
+	
+	for(size_t i = 0; i < rows; i++)
 	{
-		// This is an error! Handle it somehow.
-		;
-	}
-	else
-	{
-		// Allocate matrix data array.
-		data = new matrix_data_type*[rows];
-		
-		// Copy matrix contents from right into *this.
-		for(int i = 0; i < rows; i++)
+		for(size_t j = 0; j < cols; j++)
 		{
-			data[i] = new matrix_data_type[cols];
-			
-			for(int j = 0; j < cols; j++)
-			{
-				data[i][j] = right.data[i][j];
-			}
+			data[i][j] = right.data[i][j];
 		}
 	}
 }
 
 Matrix::~Matrix()
 {
-	for(int i = 0; i < rows; i++)
+	for(size_t i = 0; i < rows; i++)
 		delete [ ] data[i];
 		
 	delete [ ] data;
@@ -89,7 +127,7 @@ Matrix& Matrix::operator=(const Matrix& right)
 		return *this;
 	
 	// Deallocate existing matrix data array.
-	for(int i = 0; i < rows; i++)
+	for(size_t i = 0; i < rows; i++)
 		delete [ ] data[i];
 		
 	delete [ ] data;
@@ -107,14 +145,14 @@ Matrix& Matrix::operator=(const Matrix& right)
 	else
 	{
 		// Allocate matrix data array.
-		data = new matrix_data_type*[rows];
+		data = new matrix_data_t*[rows];
 		
 		// Copy matrix contents from right into *this.
-		for(int i = 0; i < rows; i++)
+		for(size_t i = 0; i < rows; i++)
 		{
-			data[i] = new matrix_data_type[cols];
+			data[i] = new matrix_data_t[cols];
 			
-			for(int j = 0; j < cols; j++)
+			for(size_t j = 0; j < cols; j++)
 			{
 				data[i][j] = right.data[i][j];
 			}
@@ -134,23 +172,23 @@ Matrix& Matrix::operator*=(const Matrix& right)
 	
 	// Create new data array to store the result.
 	// Result will be a this.rows x right.cols size matrix.
-	matrix_data_type** new_data = new matrix_data_type*[this->rows];
-	for(int i = 0; i < this->rows; i++)
+	matrix_data_t** new_data = new matrix_data_t*[this->rows];
+	for(size_t i = 0; i < this->rows; i++)
 	{
-		new_data[i] = new matrix_data_type[right.cols];
+		new_data[i] = new matrix_data_t[right.cols];
 		
-		for(int j = 0; j < right.cols; j++)
+		for(size_t j = 0; j < right.cols; j++)
 			new_data[i][j] = 0;
 	}
 		
 	// Calculate the values of the result matrix.
-	for(int i = 0; i < this->rows; i++)
-		for(int j = 0; j < right.cols; j++)
-			for(int k = 0; k < right.rows; k++)
+	for(size_t i = 0; i < this->rows; i++)
+		for(size_t j = 0; j < right.cols; j++)
+			for(size_t k = 0; k < right.rows; k++)
 				new_data[i][j] += this->data[i][k] * right.data[k][j];
 				
 	// Deallocate old array.
-	for(int i = 0; i < rows; i++)
+	for(size_t i = 0; i < rows; i++)
 		delete [ ] data[i];
 		
 	delete [ ] data;
@@ -176,8 +214,8 @@ bool Matrix::operator==(const Matrix& right) const
 	if(this->rows != right.rows || this->cols != right.cols)
 		return false;
 		
-	for(int i = 0; i < rows; i++)
-		for(int j = 0; j < cols; j++)
+	for(size_t i = 0; i < rows; i++)
+		for(size_t j = 0; j < cols; j++)
 			if(data[i][j] != right.data[i][j])
 				return false;
 				
@@ -197,12 +235,12 @@ void Matrix::transpose()
 	if(rows != cols)
 		;
 	
-	for(int i = 0; i < rows/2; i++)
-		for(int j = 0; j < cols/2; j++)
+	for(size_t i = 0; i < rows/2; i++)
+		for(size_t j = 0; j < cols/2; j++)
 			swap(data[i][j], data[j][i]);
 }
 
-matrix_data_type& Matrix::operator()(const unsigned int& row, const unsigned int& col)
+matrix_data_t& Matrix::operator()(const size_t& row, const size_t& col)
 {
 	// Check for out-of-bounds.
 	if(row >= rows || col >= cols)
@@ -214,7 +252,7 @@ matrix_data_type& Matrix::operator()(const unsigned int& row, const unsigned int
 	return data[row][col];
 }
 
-const matrix_data_type& Matrix::operator()(const unsigned int& row, const unsigned int& col) const
+const matrix_data_t& Matrix::operator()(const size_t& row, const size_t& col) const
 {
 	// Check for out-of-bounds.
 	if(row >= rows || col >= cols)
@@ -224,4 +262,16 @@ const matrix_data_type& Matrix::operator()(const unsigned int& row, const unsign
 	}
 	
 	return data[row][col];
+}
+
+void Matrix::print(ostream& out)
+{
+	for(size_t i = 0; i < rows; i++)
+	{
+		for(size_t j = 0; j < cols; j++)
+		{
+			out << data[i][j] << ( j < cols-1 ? " " : "" );
+		}
+		out << endl;
+	}
 }
