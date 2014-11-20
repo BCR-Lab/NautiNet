@@ -11,28 +11,31 @@ private:
 public:
 		inline ALGAE(){
             id = 0;
-            position.x = 0;
-            position.y = 0;
-            position.z = 0;
-            }; // constructor
+
+            } // constructor
 		// Get and set can be overidden by whatever I need the Iterator that will parse the particles for
 
 		Point3D Algaeget()const
-		{return position.x;
-         return position.y;
-         return position.z;}
+		{
+            return (this->position);
+        }
 
 
 		void Algaeset(double X, double Y, double Z)
-		{
-        X = position.x;
-        Y = position.y;
-        Z = position.z;
-        };
+        {
+            X = (this->position).x;
+            Y = (this->position).y;
+            Z = (this->position).z;
+        }
 
 
-		 int getID( )const {return id;}
-		void setID(int num){id = num};
+		 int getID( )const
+		 {
+		     return id;
+        }
+		void setID(int num){
+		    id = num;
+        }
 
 
 	};
