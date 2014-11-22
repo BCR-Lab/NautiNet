@@ -1,11 +1,11 @@
 #include "NNRobot.h"
 
-Point3D NNRobot::getPosition()
+Point3D NNRobot::position()
 {
 	return Point3D();
 }
 
-Matrix NNRobot::getOrientation()
+Matrix NNRobot::orientation()
 {
 	return Matrix(IDENTITY, 4);
 }

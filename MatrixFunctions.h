@@ -22,6 +22,8 @@ Matrix make3DScaleMatrix(double xScale, double yScale, double zScale);
 
 Matrix translationMatrixFromPoint(Point3D p);
 
+Matrix rotationMatrixFromPoints(Point3D p, Point3D q);
+
 Matrix pointVectorFromPoint(Point3D p);
 Point3D pointFromPointVector(Matrix m);
 

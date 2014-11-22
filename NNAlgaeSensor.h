@@ -1,8 +1,8 @@
 #ifndef NN_ALGAE_SENSOR_H
 #define NN_ALGAE_SENSOR_H
 
-#include "Matrix.h"
 #include <iostream>
+#include "Matrix.h"
 using namespace std;
 
 // Forward declarations of world and robot classes, for compiler efficiency.
@@ -74,7 +74,7 @@ class NNAlgaeSensor
 		// FUNCTIONS
 		
 		// Returns the current (i.e. most recently read) sensor value.
-		double getSensorValue();
+		double sensorValue();
 		
 		// Updates the sensor value.
 		// In the simulation version, this method queries an NNWorld object.

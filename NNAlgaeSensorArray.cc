@@ -2,7 +2,6 @@
 #include "Point3D.h"
 #include <cstring>
 #include <cmath>
-
 using namespace std;
 
 // CONSTRUCTORS AND DESTRUCTORS
@@ -15,7 +14,7 @@ NNAlgaeSensorArray::NNAlgaeSensorArray()
 
 // FUNCTIONS
 
-NNAlgaeSensorArrayValue NNAlgaeSensorArray::getSensorGradient()
+NNAlgaeSensorArrayValue NNAlgaeSensorArray::sensorGradient()
 {
 	return lastSensorGradientReading;
 }

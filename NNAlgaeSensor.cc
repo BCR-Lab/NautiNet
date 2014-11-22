@@ -75,10 +75,10 @@ void NNAlgaeSensor::updateSensorValue()
 	Matrix sensor_cone_base_center_matrix(pointVectorFromPoint(Point3D(SENSOR_CONE_HEIGHT, 0, 0)));
 
 	// Get the robot's current position and convert robot position into translation matrix.
-	Matrix robot_position(translationMatrixFromPoint(robot->getPosition()));
+	Matrix robot_position(translationMatrixFromPoint(robot->position()));
 	
 	// Get the robot's current orientation (a rotation matrix).
-	Matrix robot_orientation(robot->getOrientation());
+	Matrix robot_orientation(robot->orientation());
 	
 	// Generate translation matrix representing the sensor's offset (from the robot center).
 	Matrix sensor_offset(translationMatrixFromPoint(Point3D(offset, 0, 0)));
@@ -98,7 +98,7 @@ void NNAlgaeSensor::updateSensorValue()
 //	lastSensorValue = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 }
 
-double NNAlgaeSensor::getSensorValue()
+double NNAlgaeSensor::sensorValue()
 {
 	return lastSensorValue;
 }

@@ -48,14 +48,17 @@ class Matrix
 		bool operator==(const Matrix& right) const;
 		bool operator!=(const Matrix& right) const;
 		
-		// Access operators (and const versions).
+		// Cell access operator (and const version).
 		matrix_data_t& operator()(const size_t& row, const size_t& col);
 		const matrix_data_t& operator()(const size_t& row, const size_t& col) const;
 		
+		// Stream insertion operator.
+		friend ostream& operator<<(ostream& out, Matrix m);
+		
 		// ACCESSORS
 		
-		int getNumRows() { return rows; }
-		int getNumCols() { return cols; }
+		int numRows() { return rows; }
+		int numCols() { return cols; }
 		
 		// FUNCTIONS
 		

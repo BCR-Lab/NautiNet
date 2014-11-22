@@ -125,6 +125,11 @@ Matrix& Matrix::operator=(const Matrix& right)
 	// Check for self-assignment.
 	if(this == &right)
 		return *this;
+		
+	// Check for matching matrix dimensions.
+	// If the matrix dimensions don't match, throw an exception!
+	if(this->rows != right.rows || this->cols != right.cols)
+		;
 	
 	// Deallocate existing matrix data array.
 	for(size_t i = 0; i < rows; i++)
@@ -235,8 +240,8 @@ void Matrix::transpose()
 	if(rows != cols)
 		;
 	
-	for(size_t i = 0; i < rows/2; i++)
-		for(size_t j = 0; j < cols/2; j++)
+	for(size_t i = 1; i < rows; i++)
+		for(size_t j = 0; j < i; j++)
 			swap(data[i][j], data[j][i]);
 }
 
@@ -274,4 +279,9 @@ void Matrix::print(ostream& out)
 		}
 		out << endl;
 	}
+}
+
+ostream& operator<<(ostream& out, Matrix m)
+{
+	
 }

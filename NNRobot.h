@@ -7,12 +7,12 @@
 class NNRobot
 {
 	private:
-		Point3D position;
-		Matrix orientation;
+		Point3D position_;
+		Matrix orientation_;
 	
 	public:
-		Point3D getPosition();
-		Matrix getOrientation();
+		Point3D position();
+		Matrix orientation();
 };
 
 #endif

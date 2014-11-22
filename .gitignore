@@ -1,0 +1,5 @@
+*.o
+algae_test
+geometry_test
+matrix_test
+world_text

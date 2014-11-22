@@ -3,10 +3,12 @@
 
 #include <iostream>
 #include <vector>
-#include "NNRobot.h"
 #include "NNAlgaeSensor.h"
-
 using namespace std;
+
+// Forward declarations of world and robot classes, for compiler efficiency.
+class NNRobot;
+class NNWorld;
 
 /*
  An NNAlgaeSensorGradient object represents the gradient of algae concentration around the robonaut. It has six values: concentration in the positive z direction, concentration in the negative z direction, and likewise for x and y.
@@ -30,18 +32,6 @@ struct NNAlgaeSensorGradient
 		z_pos_dir_concentration(zpos),
 		z_neg_dir_concentration(zneg)
 		{ }
-};
-
-// TEMPORARY - A simplified World class, for testing.
-#include "Point3D.h"
-
-class NNWorld
-{
-	public:
-		double getConcentrationInCone(Point3D sensor_cone_apex, Point3D sensor_cone_base_center, double radius)
-		{
-			return 1.0;
-		}
 };
 
 /*
@@ -78,7 +68,7 @@ class NNAlgaeSensorArray
 		
 		// FUNCTIONS
 		
-		NNAlgaeSensorGradient getSensorGradient();
+		NNAlgaeSensorGradient sensorGradient();
 		
 		void setWorld(NNWorld* world);
 		void setRobot(NNRobot* robot);
