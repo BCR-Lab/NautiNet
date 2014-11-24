@@ -1,5 +1,7 @@
 *.o
 *~
+.DS_Store
+
 algae_sensor_test
 collision_sensor_test
 geometry_test
