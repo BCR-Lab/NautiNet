@@ -1,5 +1,7 @@
 *.o
+*~
 algae_sensor_test
+collision_sensor_test
 geometry_test
 matrix_test
 world_text
