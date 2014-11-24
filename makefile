@@ -3,9 +3,11 @@ GLOBAL_INCLUDE_LIBS = Point3D.o Matrix.o MatrixFunctions.o
 SENSOR_INCLUDE_LIBS = NNRobot.o NNWorld.o NNGeometryFunctions.o
 
 
-all: libraries unit_tests
+all: global_libraries sensor_libraries unit_tests
 
-libraries: Point3D.o Matrix.o MatrixFunctions.o
+global_libraries: Point3D.o Matrix.o MatrixFunctions.o
+
+sensor_libraries: NNRobot.o NNWorld.o NNGeometryFunctions.o
 
 unit_tests: matrix_test algae_sensor_test collision_sensor_test world_test geometry_test
 
