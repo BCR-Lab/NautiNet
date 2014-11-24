@@ -3,7 +3,7 @@
 #include "Point3D.h"
 #include "MatrixFunctions.h"
 #include "NNRobot.h"
-// #include "NNWorld.h"
+#include "NNWorld.h"
 
 NNAlgaeSensor::NNAlgaeSensor(Matrix orientation, double offset) :
 	orientation (orientation),
@@ -93,15 +93,15 @@ void NNAlgaeSensor::updateSensorValue()
 	Point3D sensor_cone_base_center(pointFromPointVector(sensor_cone_base_center_matrix));
 	
 	// Get the algae concentration in the specified cone.
-//	lastSensorValue = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	lastSensorValue = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 }
 
-double NNAlgaeSensor::sensorValue()
+double NNAlgaeSensor::sensorValue() const
 {
 	return lastSensorValue;
 }
 
-void NNAlgaeSensor::printSensorValue(ostream& out)
+void NNAlgaeSensor::printSensorValue(ostream& out) const
 {
 	out << "Current sensor value is: " << lastSensorValue << endl;
 }

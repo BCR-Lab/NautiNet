@@ -10,6 +10,9 @@ using namespace std;
 class NNWorld;
 class NNRobot;
 
+// #define SENSOR_CONE_HEIGHT 0.1	// 10 cm, in meters.
+// #define SENSOR_CONE_ANGLE 54.0 * M_PI / 180.0	// 54 degrees, in radians.
+
 class NNCollisionSensor
 {
 	private:

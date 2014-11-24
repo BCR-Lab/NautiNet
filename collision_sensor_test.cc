@@ -13,7 +13,7 @@ int main()
 	Matrix orientation = make3DRotationMatrix(PITCH, M_PI/2);
 	double offset = 0.1;	// 10 cm.
 	
-	NNAlgaeSensor sensor(orientation, offset);
+	NNCollisionSensor sensor(orientation, offset);
 	sensor.setWorld(world);
 	sensor.setRobot(robot);
 	

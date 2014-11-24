@@ -3,7 +3,7 @@
 #include "Point3D.h"
 #include "MatrixFunctions.h"
 #include "NNRobot.h"
-// #include "NNWorld.h"
+#include "NNWorld.h"
 
 NNCollisionSensor::NNCollisionSensor(Matrix orientation, double offset) :
 	orientation (orientation),
@@ -93,7 +93,7 @@ void NNCollisionSensor::updateSensorValue()
 	Point3D sensor_cone_base_center(pointFromPointVector(sensor_cone_base_center_matrix));
 	
 	// Check for obstacle presence within the specified cone.
-//	lastSensorValue = world->isObstacleInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	lastSensorValue = world->isObstacleInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 }
 
 bool NNCollisionSensor::sensorValue()

@@ -59,7 +59,7 @@ class NNAlgaeSensor
 		void setWorld(NNWorld* world);
 		
 		// Returns the current (i.e. most recently read) sensor value.
-		double sensorValue();
+		double sensorValue() const;
 		
 		// FUNCTIONS
 		
@@ -69,7 +69,7 @@ class NNAlgaeSensor
 		void updateSensorValue();
 		
 		// Prints a line with the current (i.e. most recently read) sensor value to the provided output stream.
-		void printSensorValue(ostream& out = cout);
+		void printSensorValue(ostream& out = cout) const;
 };
 
 #endif

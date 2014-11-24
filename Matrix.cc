@@ -269,7 +269,7 @@ const matrix_data_t& Matrix::operator()(const size_t& row, const size_t& col) co
 	return data[row][col];
 }
 
-void Matrix::print(ostream& out)
+void Matrix::print(ostream& out) const
 {
 	for(size_t i = 0; i < rows; i++)
 	{

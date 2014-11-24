@@ -68,14 +68,14 @@ class NNAlgaeSensorArray
 		
 		// FUNCTIONS
 		
-		NNAlgaeSensorGradient sensorGradient();
+		NNAlgaeSensorGradient sensorGradient() const;
 		
 		void setWorld(NNWorld* world);
 		void setRobot(NNRobot* robot);
 		
 		void addSensor(NNAlgaeSensor sensor);
 		
-		void printSensorGradient(ostream& out = cout);
+		void printSensorGradient(ostream& out = cout) const;
 };
 
 #endif

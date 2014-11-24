@@ -57,14 +57,16 @@ class Matrix
 		
 		// ACCESSORS
 		
-		int numRows() { return rows; }
-		int numCols() { return cols; }
+		int numRows() const
+			{ return rows; }
+		int numCols() const
+			{ return cols; }
 		
 		// FUNCTIONS
 		
 		void transpose();
 		
-		void print(ostream& out = cout);
+		void print(ostream& out = cout) const;
 };
 
 #endif

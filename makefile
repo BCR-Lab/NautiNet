@@ -1,13 +1,18 @@
 GLOBAL_INCLUDE_LIBS = Point3D.o Matrix.o MatrixFunctions.o
 
-SENSOR_INCLUDE_LIBS = NNRobot.o NNWorld.o NNGeometryFunctions.o
+SENSOR_INCLUDE_LIBS = NNGeometryFunctions.o
 
 
 all: global_libraries sensor_libraries unit_tests
 
+
+clean:
+	rm *.o *_test
+
+
 global_libraries: Point3D.o Matrix.o MatrixFunctions.o
 
-sensor_libraries: NNRobot.o NNWorld.o NNGeometryFunctions.o
+sensor_libraries: NNGeometryFunctions.o
 
 unit_tests: matrix_test algae_sensor_test collision_sensor_test world_test geometry_test
 
@@ -26,22 +31,22 @@ matrix_test.o: matrix_test.cc Matrix.h MatrixFunctions.h
 	g++ -c matrix_test.cc
 
 
-algae_sensor_test: algae_sensor_test.o NNAlgaeSensor.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
-	g++ -o algae_sensor_test algae_sensor_test.o NNAlgaeSensor.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+algae_sensor_test: algae_sensor_test.o NNAlgaeSensor.o NNWorld.o NNRobot.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+	g++ -o algae_sensor_test algae_sensor_test.o NNAlgaeSensor.o NNWorld.o NNRobot.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
 
 algae_sensor_test.o: algae_sensor_test.cc NNAlgaeSensor.h Matrix.h
 	g++ -c algae_sensor_test.cc
 	
 
-collision_sensor_test: collision_sensor_test.cc NNCollisionSensor.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
-	g++ -o collision_sensor_test collision_sensor_test.o NNCollisionSensor.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+collision_sensor_test: collision_sensor_test.o NNCollisionSensor.o NNWorld.o NNRobot.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+	g++ -o collision_sensor_test collision_sensor_test.o NNCollisionSensor.o NNWorld.o NNRobot.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
 
-collision_sensor_test.o: collision_sensor_test.cc NNCollisionSensor.h Matrixh
+collision_sensor_test.o: collision_sensor_test.cc NNCollisionSensor.h Matrix.h
 	g++ -c collision_sensor_test.cc
 
 	
-world_test: world_test.o NNWorld.o NNGeometryFunctions.o $(INCLUDE_LIBS)
-	g++ -o world_test world_test.o NNWorld.o NNGeometryFunctions.o $(INCLUDE_LIBS)
+world_test: world_test.o NNWorld.o NNGeometryFunctions.o $(GLOBAL_INCLUDE_LIBS)
+	g++ -o world_test world_test.o NNWorld.o NNGeometryFunctions.o $(GLOBAL_INCLUDE_LIBS)
 	
 world_test.o: world_test.cc NNWorld.h
 	g++ -c world_test.cc
@@ -51,7 +56,7 @@ NNAlgaeSensor.o: NNAlgaeSensor.cc NNAlgaeSensor.h NNSensorUtility.h Point3D.h
 	g++ -c NNAlgaeSensor.cc
 	
 NNCollisionSensor.o: NNCollisionSensor.cc NNCollisionSensor.h NNSensorUtility.h Point3D.h
-	g++ -c NNCollisioNSensor.cc
+	g++ -c NNCollisionSensor.cc
 
 NNRobot.o: NNRobot.cc NNRobot.h Matrix.h Point3D.h
 	g++ -c NNRobot.cc
