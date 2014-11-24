@@ -1,20 +1,20 @@
 #include <cmath>
-#include "NNAlgaeSensor.h"
+#include "NNCollisionSensor.h"
 #include "Point3D.h"
 #include "MatrixFunctions.h"
 #include "NNRobot.h"
 // #include "NNWorld.h"
 
-NNAlgaeSensor::NNAlgaeSensor(Matrix orientation, double offset) :
+NNCollisionSensor::NNCollisionSensor(Matrix orientation, double offset) :
 	orientation (orientation),
 	offset (offset),
-	lastSensorValue (0.0)
+	lastSensorValue (false)
 	{ }
 
-NNAlgaeSensor::NNAlgaeSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double offset) :
+NNCollisionSensor::NNCollisionSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double offset) :
 	orientation (Matrix(IDENTITY, 4)),
 	offset (offset),
-	lastSensorValue (0.0)
+	lastSensorValue (false)
 {
 	switch(orientation)
 	{
@@ -51,17 +51,17 @@ NNAlgaeSensor::NNAlgaeSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double of
 	}
 }
 
-void NNAlgaeSensor::setRobot(NNRobot* robot)
+void NNCollisionSensor::setRobot(NNRobot* robot)
 {
 	this->robot = robot;
 }
 
-void NNAlgaeSensor::setWorld(NNWorld* world)
+void NNCollisionSensor::setWorld(NNWorld* world)
 {
 	this->world = world;
 }
 
-void NNAlgaeSensor::updateSensorValue()
+void NNCollisionSensor::updateSensorValue()
 {
 	// *** NOTE: All measurements are in meters. ***
 	
@@ -92,16 +92,16 @@ void NNAlgaeSensor::updateSensorValue()
 	Point3D sensor_cone_apex(pointFromPointVector(sensor_position));
 	Point3D sensor_cone_base_center(pointFromPointVector(sensor_cone_base_center_matrix));
 	
-	// Get the algae concentration in the specified cone.
-//	lastSensorValue = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	// Check for obstacle presence within the specified cone.
+//	lastSensorValue = world->isObstacleInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
 }
 
-double NNAlgaeSensor::sensorValue()
+bool NNCollisionSensor::sensorValue()
 {
 	return lastSensorValue;
 }
 
-void NNAlgaeSensor::printSensorValue(ostream& out)
+void NNCollisionSensor::printSensorValue(ostream& out)
 {
-	out << "Current sensor value is: " << lastSensorValue << endl;
+	out << "Current sensor value is: " << ( lastSensorValue == true ? "true (obstacle detected in sensor cone)" : "false (obstacle NOT detected in sensor cone)" ) << endl;
 }

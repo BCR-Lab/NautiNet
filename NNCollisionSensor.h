@@ -1,5 +1,5 @@
-#ifndef NN_ALGAE_SENSOR_H
-#define NN_ALGAE_SENSOR_H
+#ifndef NN_COLLISION_SENSOR_H
+#define NN_COLLISION_SENSOR_H
 
 #include <iostream>
 #include "Matrix.h"
@@ -10,17 +10,13 @@ using namespace std;
 class NNWorld;
 class NNRobot;
 
-// The size of the cone in which we get the algae density (that is, the luminescence value in the relevant frequency) is not something we will have to define in an actual, running-on-hardware implementation (it will simply depend on the sensor's capabilities), but for simulation purposes we do have to know it.
-#define SENSOR_CONE_HEIGHT 0.1	// 10 cm, in meters.
-#define SENSOR_CONE_ANGLE 54.0 * M_PI / 180.0	// 54 degrees, in radians.
-
-class NNAlgaeSensor
+class NNCollisionSensor
 {
 	private:
 		
 		// DATA MEMBERS
 		
-		// Reference to robot which owns this sensor.
+		// Reference to the robot which owns this sensor.
 		NNRobot* robot;
 		
 		// *** FOR SIMULATION ONLY. ***
@@ -33,25 +29,25 @@ class NNAlgaeSensor
 		// Rotation matrix representing orientation of sensor as rotation from reference orientation (facing toward positive X).
 		Matrix orientation;
 		
-		// The most recently read sensor value. Initial value is 0.
-		double lastSensorValue;
+		// The most recently read sensor value. Initial value is false.
+		bool lastSensorValue;
 		
 		// FUNCTIONS
-		
-	public:
 	
+	public:
+		
 		// CONSTRUCTORS
 		
-		// Declares an NNAlgaeSensor with the given orientation and offset.
-		NNAlgaeSensor(Matrix orientation, double offset = 0);
+		// Declares an NNCollisionSensor with the given orientation and offset.
+		NNCollisionSensor(Matrix orientation, double offset = 0);
 		
-		// Declares an NNAlgaeSensor with a preset orientation and the given offset.
-		NNAlgaeSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double offset = 0);
+		// Declares an NNCollisionSensor with a preset orientation and the given offset.
+		NNCollisionSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double offset = 0);
 		
 		// ACCESSORS
 		
 		// Assigns a robot object as the owner of this sensor.
-		// (This should be the object which contains the NNAlgaeSensorArray which contains this sensor.)
+		// (This should be the object which contains the NNCollisionSensorArray which contains this sensor.)
 		void setRobot(NNRobot* robot);
 		
 		// *** FOR SIMULATION ONLY. ***
@@ -59,7 +55,7 @@ class NNAlgaeSensor
 		void setWorld(NNWorld* world);
 		
 		// Returns the current (i.e. most recently read) sensor value.
-		double sensorValue();
+		bool sensorValue();
 		
 		// FUNCTIONS
 		
