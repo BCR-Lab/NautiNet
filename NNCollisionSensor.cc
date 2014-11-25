@@ -69,9 +69,6 @@ void NNCollisionSensor::updateSensorValue()
 	// (This will serve as the base of our sensor cone.)
 	Matrix sensor_position(pointVectorFromPoint(Point3D(0, 0, 0)));
 	
-	// We also need a point vector for the center of the sensor cone base.
-	Matrix sensor_cone_base_center_matrix(pointVectorFromPoint(Point3D(SENSOR_CONE_HEIGHT, 0, 0)));
-
 	// Get the robot's current position and convert robot position into translation matrix.
 	Matrix robot_position(translationMatrixFromPoint(robot->position()));
 	
@@ -81,19 +78,14 @@ void NNCollisionSensor::updateSensorValue()
 	// Generate translation matrix representing the sensor's offset (from the robot center).
 	Matrix sensor_offset(translationMatrixFromPoint(Point3D(offset, 0, 0)));
 	
-	// Apply all relevant transformations to the two key points of the sensor cone (apex and base center).
+	// Apply all relevant transformations to the point representing the position of the sensor.
 	sensor_position *= Matrix(IDENTITY, 4) * sensor_offset * orientation * robot_orientation * robot_position;
-	sensor_cone_base_center_matrix *= Matrix(IDENTITY, 4) * sensor_offset * orientation * robot_orientation * robot_position;
-
-	// The radius of the (base of the) sensor cone is derived from the height and angle.
-	double sensor_cone_radius = SENSOR_CONE_HEIGHT * tan (SENSOR_CONE_ANGLE / 2);
 
 	// Convert back to points, for passing to the world object.
-	Point3D sensor_cone_apex(pointFromPointVector(sensor_position));
-	Point3D sensor_cone_base_center(pointFromPointVector(sensor_cone_base_center_matrix));
+	Point3D sensor_point(pointFromPointVector(sensor_position));
 	
 	// Check for obstacle presence within the specified cone.
-	lastSensorValue = world->isObstacleInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	lastSensorValue = world->isObstacleAtPoint(sensor_point);
 }
 
 bool NNCollisionSensor::sensorValue()
