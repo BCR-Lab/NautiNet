@@ -8,6 +8,9 @@ all: global_libraries sensor_libraries unit_tests
 
 clean:
 	rm *.o *_test
+	
+getversion:
+	g++ --version
 
 
 global_libraries: Point3D.o Matrix.o MatrixFunctions.o

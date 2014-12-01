@@ -11,7 +11,7 @@ int main()
 	
 	world.loadData();
 	
-	world.printTimeInstant(0);
+//	world.printTimeInstant(0);
 
 	return 0;
 }
