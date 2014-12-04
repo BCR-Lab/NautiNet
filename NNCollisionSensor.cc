@@ -8,13 +8,17 @@
 NNCollisionSensor::NNCollisionSensor(Matrix orientation, double offset) :
 	orientation (orientation),
 	offset (offset),
-	lastSensorValue (false)
+	lastSensorValue (false),
+	robot (NULL),
+	world (NULL)
 	{ }
 
 NNCollisionSensor::NNCollisionSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double offset) :
 	orientation (Matrix(IDENTITY, 4)),
 	offset (offset),
-	lastSensorValue (false)
+	lastSensorValue (false),
+	robot (NULL),
+	world (NULL)
 {
 	switch(orientation)
 	{

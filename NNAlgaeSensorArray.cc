@@ -6,17 +6,16 @@ using namespace std;
 
 // CONSTRUCTORS AND DESTRUCTORS
 
-NNAlgaeSensorArray::NNAlgaeSensorArray()
-{
-	robot = NULL;
-	world = NULL;
-}
+NNAlgaeSensorArray::NNAlgaeSensorArray() :
+	robot (NULL),
+	world (NULL)
+	{ }
 
 // FUNCTIONS
 
-NNAlgaeSensorArrayValue NNAlgaeSensorArray::sensorGradient()
+NNAlgaeSensorGradient NNAlgaeSensorArray::algaeGradient() const
 {
-	return lastSensorGradientReading;
+	return lastAlgaeGradientReading;
 }
 
 void NNAlgaeSensorArray::updateSensorValues()
@@ -25,37 +24,30 @@ void NNAlgaeSensorArray::updateSensorValues()
 		// THROW AN EXCEPTION, RETURN AN ERROR CODE, OR OTHERWISE HANDLE ERROR
 		return;
 
-	// Negative X direction.
-	sensor_cone_apex.x -= sensor_offset;
-	sensor_cone_base_center.x -= sensor_offset + sensor_cone_height;
-	lastSensorGradientReading.x_neg_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
-	sensor_cone_base_center.x = sensor_cone_apex.x = position.x;
+	// First, update the sensor values for all the individual sensors.
+	for(vector <NNAlgaeSensor>::iterator sensor = sensor_array.begin(); sensor != sensor_array.end(); sensor++)
+	{
+		(*sensor).updateSensorValue();
+	}
 	
-	// Positive Y direction.
-	sensor_cone_apex.y += sensor_offset;
-	sensor_cone_base_center.y += sensor_offset + sensor_cone_height;
-	lastSensorGradientReading.y_pos_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
-	sensor_cone_base_center.y = sensor_cone_apex.y = position.y;
+	// Aggregate the data from the sensors into the NNAlgaeSensorGradient object.
+	// NOT YET IMPLEMENTED!!!
+	;
+}
+
+Matrix NNAlgaeSensorArray::greatestAlgaeConcentrationBearing() const
+{
+	// Index of sensor showing greatest algae concentration.
+	int index = 0;
 	
-	// Negative Y direction.
-	sensor_cone_apex.y -= sensor_offset;
-	sensor_cone_base_center.y -= sensor_offset + sensor_cone_height;
-	lastSensorGradientReading.y_neg_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
-	sensor_cone_base_center.y = sensor_cone_apex.y = position.y;
+	// Look through all the sensor arrays, find the one with the highest value (i.e. reading algae concentration reading), return its orientation.
+	for(int i = 1; i < sensor_array.size(); i++)
+	{
+		if(sensor_array[i].sensorValue() > sensor_array[index].sensorValue())
+			index = i;
+	}
 	
-	// Positive Z direction.
-	sensor_cone_apex.z += sensor_offset;
-	sensor_cone_base_center.z += sensor_offset + sensor_cone_height;
-	lastSensorGradientReading.z_pos_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
-	sensor_cone_base_center.z = sensor_cone_apex.z = position.z;
-	
-	// Negative Z direction.
-	sensor_cone_apex.z -= sensor_offset;
-	sensor_cone_base_center.z -= sensor_offset + sensor_cone_height;
-	lastSensorGradientReading.z_neg_dir_concentration = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
-	sensor_cone_base_center.z = sensor_cone_apex.z = position.z;
-	
-	// Done! All six direction components of the lastSensorGradientReading is now updated.
+	return sensor_array[index].orientation();
 }
 
 void NNAlgaeSensorArray::setWorld(NNWorld* world)
@@ -63,19 +55,27 @@ void NNAlgaeSensorArray::setWorld(NNWorld* world)
 	this->world = world;
 }
 
-void NNAlgaeSensorArray::setRobot(NNWRobot* robot)
+void NNAlgaeSensorArray::setRobot(NNRobot* robot)
 {
 	this->robot = robot;
 }
 
-void NNAlgaeSensorArray::printSensorGradient(ostream& out)
+void NNAlgaeSensorArray::addSensor(const NNAlgaeSensor& sensor)
+{
+	// In the deployment version, NNAlgaeSensor should have some sort of hardware ID that may be queried, to test whether two sensor objects refer to the same physical sensor. In such a case, we may want to prevent the user of the NNAlgaeSensorArray class to add redundant NNAlgaeSensor objects to the sensor array.
+	// For the simulation version, we assume that any two NNAlgaeSensor objects always refer to different physical sensors (even if they are, in fact, the same object in memory), and perform no checks.
+	
+	sensor_array.push_back(sensor);
+}
+
+void NNAlgaeSensorArray::printSensorGradient(ostream& out) const
 {
 	out << "Current sensor value is:" << endl;
-	out << "Positive x: " << lastSensorGradientReading.x_pos_dir_concentration << endl;
-	out << "Negative x: " << lastSensorGradientReading.x_neg_dir_concentration << endl;
-	out << "Positive y: " << lastSensorGradientReading.y_pos_dir_concentration << endl;
-	out << "Negative y: " << lastSensorGradientReading.y_neg_dir_concentration << endl;
-	out << "Positive z: " << lastSensorGradientReading.z_pos_dir_concentration << endl;
-	out << "Negative z: " << lastSensorGradientReading.z_neg_dir_concentration << endl;
+	out << "Positive x: " << lastAlgaeGradientReading.x_pos_dir_concentration << endl;
+	out << "Negative x: " << lastAlgaeGradientReading.x_neg_dir_concentration << endl;
+	out << "Positive y: " << lastAlgaeGradientReading.y_pos_dir_concentration << endl;
+	out << "Negative y: " << lastAlgaeGradientReading.y_neg_dir_concentration << endl;
+	out << "Positive z: " << lastAlgaeGradientReading.z_pos_dir_concentration << endl;
+	out << "Negative z: " << lastAlgaeGradientReading.z_neg_dir_concentration << endl;
 	
 }

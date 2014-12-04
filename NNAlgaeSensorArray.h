@@ -50,30 +50,31 @@ class NNAlgaeSensorArray
 		NNWorld* world;
 	
 		// The most recent sensor value.
-		NNAlgaeSensorGradient lastSensorGradientReading;
+		NNAlgaeSensorGradient lastAlgaeGradientReading;
 		
 		// The array of sensors.
-		vector <NNAlgaeSensor> sensorArray;
+		vector <NNAlgaeSensor> sensor_array;
+		
+		// FUNCTIONS
+		
+	public:
+		
+		// CONSTRUCTORS & DESTRUCTORS
+		
+		NNAlgaeSensorArray();
 		
 		// FUNCTIONS
 		
 		void updateSensorValues();
 	
-	public:
+		NNAlgaeSensorGradient algaeGradient() const;
 		
-		// CONSTRUCTORS & DESTRUCTORS
-		
-		// Default constructor.
-		NNAlgaeSensorArray();
-		
-		// FUNCTIONS
-		
-		NNAlgaeSensorGradient sensorGradient() const;
+		Matrix greatestAlgaeConcentrationBearing() const;
 		
 		void setWorld(NNWorld* world);
 		void setRobot(NNRobot* robot);
 		
-		void addSensor(NNAlgaeSensor sensor);
+		void addSensor(const NNAlgaeSensor& sensor);
 		
 		void printSensorGradient(ostream& out = cout) const;
 };

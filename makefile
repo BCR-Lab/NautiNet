@@ -1,80 +1,103 @@
+# Utility classes and functions used by many parts of the program.
 GLOBAL_INCLUDE_LIBS = Point3D.o Matrix.o MatrixFunctions.o
 
-SENSOR_INCLUDE_LIBS = NNGeometryFunctions.o
+# The robot and all its components.
+ROBOT_INCLUDE_LIBS = NNRobot.o NNAlgaeSensorArray.o NNAlgaeSensor.o NNCollisionSensor.o NNProximitySensor.o
+
+# The simulated world and the utility functions it uses.
+WORLD_INCLUDE_LIBS = NNWorld.o NNGeometryFunctions.o
 
 
-all: global_libraries sensor_libraries unit_tests
+COMPILER = g++
+
+
+all: global_libraries robot_libraries world_libraries unit_tests
 
 
 clean:
 	rm *.o *_test
 	
 getversion:
-	g++ --version
+	$(COMPILER) --version
+	
 
+global_libraries: $(GLOBAL_INCLUDE_LIBS)
 
-global_libraries: Point3D.o Matrix.o MatrixFunctions.o
+robot_libraries: $(ROBOT_INCLUDE_LIBS)
 
-sensor_libraries: NNGeometryFunctions.o
+world_libraries: $(WORLD_INCLUDE_LIBS)
 
-unit_tests: matrix_test algae_sensor_test collision_sensor_test world_test geometry_test
+unit_tests: matrix_test geometry_test algae_sensor_test collision_sensor_test proximity_sensor_test world_test
 
 
 geometry_test: geometry_test.o NNGeometryFunctions.o $(GLOBAL_INCLUDE_LIBS)
-	g++ -o geometry_test geometry_test.o NNGeometryFunctions.o $(GLOBAL_INCLUDE_LIBS)
+	$(COMPILER) -o geometry_test geometry_test.o NNGeometryFunctions.o $(GLOBAL_INCLUDE_LIBS)
 	
 geometry_test.o: geometry_test.cc NNGeometryFunctions.h
-	g++ -c geometry_test.cc
+	$(COMPILER) -c geometry_test.cc
 
 
 matrix_test: matrix_test.o $(GLOBAL_INCLUDE_LIBS)
-	g++ -o matrix_test matrix_test.o $(GLOBAL_INCLUDE_LIBS)
+	$(COMPILER) -o matrix_test matrix_test.o $(GLOBAL_INCLUDE_LIBS)
 	
 matrix_test.o: matrix_test.cc Matrix.h MatrixFunctions.h
-	g++ -c matrix_test.cc
+	$(COMPILER) -c matrix_test.cc
 
 
-algae_sensor_test: algae_sensor_test.o NNAlgaeSensor.o NNWorld.o NNRobot.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
-	g++ -o algae_sensor_test algae_sensor_test.o NNAlgaeSensor.o NNWorld.o NNRobot.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+algae_sensor_test: algae_sensor_test.o $(WORLD_INCLUDE_LIBS) $(ROBOT_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+	$(COMPILER) -o algae_sensor_test algae_sensor_test.o $(WORLD_INCLUDE_LIBS) $(ROBOT_INCLUDE_LIBS)  $(GLOBAL_INCLUDE_LIBS)
 
 algae_sensor_test.o: algae_sensor_test.cc NNAlgaeSensor.h Matrix.h
-	g++ -c algae_sensor_test.cc
+	$(COMPILER) -c algae_sensor_test.cc
 	
 
-collision_sensor_test: collision_sensor_test.o NNCollisionSensor.o NNWorld.o NNRobot.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
-	g++ -o collision_sensor_test collision_sensor_test.o NNCollisionSensor.o NNWorld.o NNRobot.o $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+collision_sensor_test: collision_sensor_test.o $(WORLD_INCLUDE_LIBS) $(ROBOT_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+	$(COMPILER) -o collision_sensor_test collision_sensor_test.o $(WORLD_INCLUDE_LIBS) $(ROBOT_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
 
 collision_sensor_test.o: collision_sensor_test.cc NNCollisionSensor.h Matrix.h
-	g++ -c collision_sensor_test.cc
+	$(COMPILER) -c collision_sensor_test.cc
+	
+	
+proximity_sensor_test: proximity_sensor_test.o $(WORLD_INCLUDE_LIBS) $(ROBOT_INCLUDE_LIBS) $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+	$(COMPILER) -o proximity_sensor_test proximity_sensor_test.o $(WORLD_INCLUDE_LIBS) $(ROBOT_INCLUDE_LIBS)  $(SENSOR_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+	
+proximity_sensor_test.o: proximity_sensor_test.cc NNProximitySensor.h
+	$(COMPILER) -c proximity_sensor_test.cc
 
 	
-world_test: world_test.o NNWorld.o NNGeometryFunctions.o $(GLOBAL_INCLUDE_LIBS)
-	g++ -o world_test world_test.o NNWorld.o NNGeometryFunctions.o $(GLOBAL_INCLUDE_LIBS)
+world_test: world_test.o $(WORLD_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
+	$(COMPILER) -o world_test world_test.o $(WORLD_INCLUDE_LIBS) $(GLOBAL_INCLUDE_LIBS)
 	
 world_test.o: world_test.cc NNWorld.h
-	g++ -c world_test.cc
+	$(COMPILER) -c world_test.cc
 
 
-NNAlgaeSensor.o: NNAlgaeSensor.cc NNAlgaeSensor.h NNSensorUtility.h Point3D.h
-	g++ -c NNAlgaeSensor.cc
+NNAlgaeSensor.o: NNAlgaeSensor.cc NNAlgaeSensor.h NNSensorUtility.h Matrix.h Point3D.h
+	$(COMPILER) -c NNAlgaeSensor.cc
 	
-NNCollisionSensor.o: NNCollisionSensor.cc NNCollisionSensor.h NNSensorUtility.h Point3D.h
-	g++ -c NNCollisionSensor.cc
+NNAlgaeSensorArray.o: NNAlgaeSensorArray.cc NNAlgaeSensorArray.h NNAlgaeSensor.h Point3D.h
+	$(COMPILER) -c NNAlgaeSensorArray.cc
+		
+NNCollisionSensor.o: NNCollisionSensor.cc NNCollisionSensor.h NNSensorUtility.h Matrix.h Point3D.h
+	$(COMPILER) -c NNCollisionSensor.cc
+	
+NNProximitySensor.o: NNProximitySensor.cc NNProximitySensor.h Matrix.h Point3D.h
+	$(COMPILER) -c NNProximitySensor.cc
 
-NNRobot.o: NNRobot.cc NNRobot.h Matrix.h Point3D.h
-	g++ -c NNRobot.cc
+NNRobot.o: NNRobot.cc NNRobot.h Matrix.h Point3D.h NNAlgaeSensorArray.h
+	$(COMPILER) -c NNRobot.cc
 	
 NNWorld.o: NNWorld.cc NNWorld.h Point3D.h
-	g++ -c NNWorld.cc
+	$(COMPILER) -c NNWorld.cc
 	
 NNGeometryFunctions.o: NNGeometryFunctions.cc Point3D.h Matrix.h MatrixFunctions.h
-	g++ -c NNGeometryFunctions.cc
+	$(COMPILER) -c NNGeometryFunctions.cc
 
 Matrix.o: Matrix.cc Matrix.h
-	g++ -c Matrix.cc
+	$(COMPILER) -c Matrix.cc
 
 MatrixFunctions.o: MatrixFunctions.cc MatrixFunctions.h
-	g++ -c MatrixFunctions.cc
+	$(COMPILER) -c MatrixFunctions.cc
 
 Point3D.o: Point3D.cc Point3D.h
-	g++ -c Point3D.cc
+	$(COMPILER) -c Point3D.cc

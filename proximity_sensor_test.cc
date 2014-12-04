@@ -1,10 +1,7 @@
 #include <iostream>
-#include <cmath>
-#include "NNAlgaeSensor.h"
+#include "NNProximitySensor.h"
 #include "NNRobot.h"
 #include "NNWorld.h"
-#include "Matrix.h"
-#include "MatrixFunctions.h"
 using namespace std;
 
 int main()
@@ -12,10 +9,7 @@ int main()
 	NNWorld world;
 	NNRobot robot;
 	
-	Matrix orientation = make3DRotationMatrix(PITCH, M_PI/2);
-	double offset = 0.1;	// 10 cm.
-	
-	NNAlgaeSensor sensor(orientation, offset);
+	NNProximitySensor sensor;
 	sensor.setWorld(&world);
 	sensor.setRobot(&robot);
 	

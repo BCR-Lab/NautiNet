@@ -6,15 +6,19 @@
 #include "NNWorld.h"
 
 NNAlgaeSensor::NNAlgaeSensor(Matrix orientation, double offset) :
-	orientation (orientation),
-	offset (offset),
-	lastSensorValue (0.0)
+	orientation_ (orientation),
+	offset_ (offset),
+	lastSensorValue (0.0),
+	robot (NULL),
+	world (NULL)
 	{ }
 
 NNAlgaeSensor::NNAlgaeSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double offset) :
-	orientation (Matrix(IDENTITY, 4)),
-	offset (offset),
-	lastSensorValue (0.0)
+	orientation_ (Matrix(IDENTITY, 4)),
+	offset_ (offset),
+	lastSensorValue (0.0),
+	robot (NULL),
+	world (NULL)
 {
 	switch(orientation)
 	{
@@ -26,27 +30,27 @@ NNAlgaeSensor::NNAlgaeSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double of
 		case BACK:
 			// Represented as rotation of pi radians (180 degrees) around vertical axis,
 			// or half-circle yaw.
-			this->orientation = make3DRotationMatrix(YAW, M_PI);
+			this->orientation_ = make3DRotationMatrix(YAW, M_PI);
 			break;
 		case RIGHT:
 			// Represented as rotation of 3*pi/2 radians (270 degrees) around vertical axis,
 			// or three-quarter-circle yaw.
-			this->orientation = make3DRotationMatrix(YAW, 3*M_PI/2);
+			this->orientation_ = make3DRotationMatrix(YAW, 3*M_PI/2);
 			break;
 		case LEFT:
 			// Represented as rotation of pi/2 radians (90 degrees) around vertical axis,
 			// or quarter-circle yaw.
-			this->orientation = make3DRotationMatrix(YAW, M_PI/2);
+			this->orientation_ = make3DRotationMatrix(YAW, M_PI/2);
 			break;
 		case TOP:
 			// Represented as rotation of pi/2 radians (90 degrees) around lateral axis,
 			// or quarter-circle pitch.
-			this->orientation = make3DRotationMatrix(PITCH, M_PI/2);
+			this->orientation_ = make3DRotationMatrix(PITCH, M_PI/2);
 			break;
 		case BOTTOM:
 			// Represented as rotation of 3*pi/2 radians (270 degrees) around lateral axis,
 			// or three-quarter-circle pitch.
-			this->orientation = make3DRotationMatrix(PITCH, 3*M_PI/2);
+			this->orientation_ = make3DRotationMatrix(PITCH, 3*M_PI/2);
 			break;
 	}
 }
@@ -79,21 +83,21 @@ void NNAlgaeSensor::updateSensorValue()
 	Matrix robot_orientation(robot->orientation());
 	
 	// Generate translation matrix representing the sensor's offset (from the robot center).
-	Matrix sensor_offset(translationMatrixFromPoint(Point3D(offset, 0, 0)));
+	Matrix sensor_offset(translationMatrixFromPoint(Point3D(offset_, 0, 0)));
 	
 	// Apply all relevant transformations to the two key points of the sensor cone (apex and base center).
-	sensor_position *= Matrix(IDENTITY, 4) * sensor_offset * orientation * robot_orientation * robot_position;
-	sensor_cone_base_center_matrix *= Matrix(IDENTITY, 4) * sensor_offset * orientation * robot_orientation * robot_position;
+	sensor_position *= Matrix(IDENTITY, 4) * sensor_offset * this->orientation_ * robot_orientation * robot_position;
+	sensor_cone_base_center_matrix *= Matrix(IDENTITY, 4) * sensor_offset * this->orientation_ * robot_orientation * robot_position;
 
 	// The radius of the (base of the) sensor cone is derived from the height and angle.
-	double sensor_cone_radius = SENSOR_CONE_HEIGHT * tan (SENSOR_CONE_ANGLE / 2);
+	double sensor_cone_base_radius = SENSOR_CONE_HEIGHT * tan (SENSOR_CONE_ANGLE / 2);
 
 	// Convert back to points, for passing to the world object.
 	Point3D sensor_cone_apex(pointFromPointVector(sensor_position));
 	Point3D sensor_cone_base_center(pointFromPointVector(sensor_cone_base_center_matrix));
 	
 	// Get the algae concentration in the specified cone.
-	lastSensorValue = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_radius);
+	lastSensorValue = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_base_radius);
 }
 
 double NNAlgaeSensor::sensorValue() const

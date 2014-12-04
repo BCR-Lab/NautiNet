@@ -4,6 +4,9 @@
 #include <queue>
 #include "Point3D.h"
 #include "Matrix.h"
+#include "NNAlgaeSensorArray.h"
+//#include "NNCollisionSensorArray.h"
+//#include "NNProximitySensorArray.h"
 using namespace std;
 
 class NNRobot
@@ -20,10 +23,18 @@ class NNRobot
 		
 		// Orientation of the robot in space, relative to the absolute Cartesian coordinate axes.
 		Matrix orientation_;
+		
+		// Sensor arrays:
+		
+		NNAlgaeSensorArray algae_sensor_array;
+//		NNCollisionSensorArray collision_sensor_array;
+//		NNProximitySensorArray proximity_sensor_array;
 	
 	public:
 	
 		// CONSTRUCTORS
+		
+		NNRobot();
 		
 		// ACCESSORS
 		

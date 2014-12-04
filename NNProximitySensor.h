@@ -1,19 +1,16 @@
-#ifndef NN_COLLISION_SENSOR_H
-#define NN_COLLISION_SENSOR_H
+#ifndef NN_PROXIMITY_SENSOR_H
+#define NN_PROXIMITY_SENSOR_H
 
 #include <iostream>
-#include "Matrix.h"
-#include "NNSensorUtility.h"
 using namespace std;
 
 // Forward declarations of world and robot classes, for compiler efficiency.
 class NNWorld;
 class NNRobot;
 
-class NNCollisionSensor
+class NNProximitySensor
 {
 	private:
-		
 		// DATA MEMBERS
 		
 		// Reference to the robot which owns this sensor.
@@ -23,14 +20,8 @@ class NNCollisionSensor
 		// Reference to a world object. The world object is queried by the simulation version of the updateSensorValue method.
 		NNWorld* world;
 		
-		// Offset, in meters, of the sensor from the center of the robot's body.
-		double offset;
-		
-		// Rotation matrix representing orientation of sensor as rotation from reference orientation (facing toward positive X).
-		Matrix orientation;
-		
-		// The most recently read sensor value. Initial value is false.
-		bool lastSensorValue;
+		// The most recently read sensor value. Initial value is 0.0.
+		double lastSensorValue;
 		
 		// FUNCTIONS
 	
@@ -38,24 +29,20 @@ class NNCollisionSensor
 		
 		// CONSTRUCTORS
 		
-		// Declares an NNCollisionSensor with the given orientation and offset.
-		NNCollisionSensor(Matrix orientation, double offset = 0);
-		
-		// Declares an NNCollisionSensor with a preset orientation and the given offset.
-		NNCollisionSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double offset = 0);
+		// Default constructor.
+		NNProximitySensor();
 		
 		// ACCESSORS
 		
 		// Assigns a robot object as the owner of this sensor.
-		// (This should be the object which contains the NNCollisionSensorArray which contains this sensor.)
+		// (This should be the object which contains the NNProximitySensorArray that contains this sensor.)
 		void setRobot(NNRobot* robot);
 		
 		// *** FOR SIMULATION ONLY. ***
-		// Provides the sensor with a reference to an NNWorld object.
 		void setWorld(NNWorld* world);
 		
 		// Returns the current (i.e. most recently read) sensor value.
-		bool sensorValue();
+		double sensorValue();
 		
 		// FUNCTIONS
 		

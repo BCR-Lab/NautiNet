@@ -28,10 +28,12 @@ class NNAlgaeSensor
 		NNWorld* world;
 		
 		// Offset, in meters, of the sensor from the center of the robot's body.
-		double offset;
+		double offset_;
 		
 		// Rotation matrix representing orientation of sensor as rotation from reference orientation (facing toward positive X).
-		Matrix orientation;
+		// Orientation is relative to the robot (i.e. bearing), not orientation in absolute coordinations.
+		// To find absolute orientation, this value must be composed with the orientation of the robot.
+		Matrix orientation_;
 		
 		// The most recently read sensor value. Initial value is 0.
 		double lastSensorValue;
@@ -60,6 +62,12 @@ class NNAlgaeSensor
 		
 		// Returns the current (i.e. most recently read) sensor value.
 		double sensorValue() const;
+		
+		Matrix orientation() const
+			{ return orientation_; }
+		
+		double offset() const
+			{ return offset_; }
 		
 		// FUNCTIONS
 		
