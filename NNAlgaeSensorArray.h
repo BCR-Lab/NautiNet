@@ -6,9 +6,8 @@
 #include "NNAlgaeSensor.h"
 using namespace std;
 
-// Forward declarations of world and robot classes, for compiler efficiency.
+// Forward declarations of robot class, for compiler efficiency.
 class NNRobot;
-class NNWorld;
 
 /*
  An NNAlgaeSensorGradient object represents the gradient of algae concentration around the robonaut. It has six values: concentration in the positive z direction, concentration in the negative z direction, and likewise for x and y.
@@ -46,9 +45,6 @@ class NNAlgaeSensorArray
 		// The robot which owns this sensor array.
 		NNRobot* robot;
 		
-		// Reference to a world object. Used for simulation.
-		NNWorld* world;
-	
 		// The most recent sensor value.
 		NNAlgaeSensorGradient lastAlgaeGradientReading;
 		
@@ -71,7 +67,6 @@ class NNAlgaeSensorArray
 		
 		Matrix greatestAlgaeConcentrationBearing() const;
 		
-		void setWorld(NNWorld* world);
 		void setRobot(NNRobot* robot);
 		
 		void addSensor(const NNAlgaeSensor& sensor);

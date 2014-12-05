@@ -11,7 +11,7 @@ class NNWorld;
 class NNRobot;
 
 // The size of the cone in which we get the algae density (that is, the luminescence value in the relevant frequency) is not something we will have to define in an actual, running-on-hardware implementation (it will simply depend on the sensor's capabilities), but for simulation purposes we do have to know it.
-#define SENSOR_CONE_HEIGHT 0.1	// 10 cm, in meters.
+#define SENSOR_CONE_HEIGHT 1	// 10 cm, in meters.
 #define SENSOR_CONE_ANGLE 54.0 * M_PI / 180.0	// 54 degrees, in radians.
 
 class NNAlgaeSensor
@@ -36,7 +36,7 @@ class NNAlgaeSensor
 		Matrix orientation_;
 		
 		// The most recently read sensor value. Initial value is 0.
-		double lastSensorValue;
+		double last_sensor_value;
 		
 		// FUNCTIONS
 		
@@ -54,11 +54,13 @@ class NNAlgaeSensor
 		
 		// Assigns a robot object as the owner of this sensor.
 		// (This should be the object which contains the NNAlgaeSensorArray which contains this sensor.)
-		void setRobot(NNRobot* robot);
+		void setRobot(NNRobot* robot)
+			{ this->robot = robot; }
 		
 		// *** FOR SIMULATION ONLY. ***
 		// Provides the sensor with a reference to an NNWorld object.
-		void setWorld(NNWorld* world);
+		void setWorld(NNWorld* world)
+			{ this->world = world; }
 		
 		// Returns the current (i.e. most recently read) sensor value.
 		double sensorValue() const;

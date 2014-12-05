@@ -2,11 +2,13 @@
 #define NN_ROBOT_H
 
 #include <queue>
+#include <string>
 #include "Point3D.h"
 #include "Matrix.h"
 #include "NNAlgaeSensorArray.h"
 //#include "NNCollisionSensorArray.h"
 //#include "NNProximitySensorArray.h"
+#include "NNLocomotion.h"
 using namespace std;
 
 class NNRobot
@@ -29,6 +31,14 @@ class NNRobot
 		NNAlgaeSensorArray algae_sensor_array;
 //		NNCollisionSensorArray collision_sensor_array;
 //		NNProximitySensorArray proximity_sensor_array;
+
+		// Locomotion setups:
+		
+		NNLocomotion locomotion;
+		
+		// FUNCTIONS
+		
+		void timeTick();
 	
 	public:
 	
@@ -49,6 +59,33 @@ class NNRobot
 		
 		Matrix orientation() const
 			{ return orientation_; }
+			
+		string status()
+			{ return "Robot is OK."; }
+			
+		// FUNCTIONS
+		
+		void addSensor(NNAlgaeSensor sensor)
+		{
+			sensor.setRobot(this);
+			algae_sensor_array.addSensor(sensor);
+		}
+			
+//		void addSensor(NNCollisionSensor sensor)
+//		{
+//			sensor.setRobot(this);
+//			collision_sensor_array.addSensor(sensor);
+//		}
+			
+//		void addSensor(NNProximitySensor sensor)
+//		{
+//			sensor.setRobot(this);
+//			proximity_sensor_array.addSensor(senosr);
+//		}
+		
+		void updatePosition(Point3D new_position);
+		
+		void run();
 };
 
 #endif

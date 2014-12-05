@@ -7,8 +7,7 @@ using namespace std;
 // CONSTRUCTORS AND DESTRUCTORS
 
 NNAlgaeSensorArray::NNAlgaeSensorArray() :
-	robot (NULL),
-	world (NULL)
+	robot (NULL)
 	{ }
 
 // FUNCTIONS
@@ -20,13 +19,11 @@ NNAlgaeSensorGradient NNAlgaeSensorArray::algaeGradient() const
 
 void NNAlgaeSensorArray::updateSensorValues()
 {
-	if(world == NULL)
-		// THROW AN EXCEPTION, RETURN AN ERROR CODE, OR OTHERWISE HANDLE ERROR
-		return;
-
 	// First, update the sensor values for all the individual sensors.
+	int i = 1;
 	for(vector <NNAlgaeSensor>::iterator sensor = sensor_array.begin(); sensor != sensor_array.end(); sensor++)
 	{
+		cout << "Updating sensor value for sensor # " << i++ << "...\n";
 		(*sensor).updateSensorValue();
 	}
 	
@@ -40,19 +37,23 @@ Matrix NNAlgaeSensorArray::greatestAlgaeConcentrationBearing() const
 	// Index of sensor showing greatest algae concentration.
 	int index = 0;
 	
+	cout << "Orientation of sensor #1:\n";
+	sensor_array[0].orientation().print();
+	cout << "Algae concentration from sensor #1: " << sensor_array[0].sensorValue() << endl;
+	
 	// Look through all the sensor arrays, find the one with the highest value (i.e. reading algae concentration reading), return its orientation.
 	for(int i = 1; i < sensor_array.size(); i++)
 	{
+		cout << "Orientation of sensor #" << i+1 << ":\n";
+		sensor_array[i].orientation().print();
+
+		cout << "Algae concentration from sensor #" << i+1 << ": " << sensor_array[i].sensorValue() << endl;
+	
 		if(sensor_array[i].sensorValue() > sensor_array[index].sensorValue())
 			index = i;
 	}
 	
 	return sensor_array[index].orientation();
-}
-
-void NNAlgaeSensorArray::setWorld(NNWorld* world)
-{
-	this->world = world;
 }
 
 void NNAlgaeSensorArray::setRobot(NNRobot* robot)

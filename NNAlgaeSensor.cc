@@ -8,7 +8,7 @@
 NNAlgaeSensor::NNAlgaeSensor(Matrix orientation, double offset) :
 	orientation_ (orientation),
 	offset_ (offset),
-	lastSensorValue (0.0),
+	last_sensor_value (0.0),
 	robot (NULL),
 	world (NULL)
 	{ }
@@ -16,7 +16,7 @@ NNAlgaeSensor::NNAlgaeSensor(Matrix orientation, double offset) :
 NNAlgaeSensor::NNAlgaeSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double offset) :
 	orientation_ (Matrix(IDENTITY, 4)),
 	offset_ (offset),
-	lastSensorValue (0.0),
+	last_sensor_value (0.0),
 	robot (NULL),
 	world (NULL)
 {
@@ -55,18 +55,9 @@ NNAlgaeSensor::NNAlgaeSensor(NN_SENSOR_ORIENTATION_PRESET orientation, double of
 	}
 }
 
-void NNAlgaeSensor::setRobot(NNRobot* robot)
-{
-	this->robot = robot;
-}
-
-void NNAlgaeSensor::setWorld(NNWorld* world)
-{
-	this->world = world;
-}
-
 void NNAlgaeSensor::updateSensorValue()
-{
+{	
+	cout << "Computing sensor cone...\n";
 	// *** NOTE: All measurements are in meters. ***
 	
 	// Create a point vector to represent the sensor's position.
@@ -97,15 +88,16 @@ void NNAlgaeSensor::updateSensorValue()
 	Point3D sensor_cone_base_center(pointFromPointVector(sensor_cone_base_center_matrix));
 	
 	// Get the algae concentration in the specified cone.
-	lastSensorValue = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_base_radius);
+	cout << "Querying world for algae concentration in sensor cone...\n";
+	last_sensor_value = world->getConcentrationInCone(sensor_cone_apex, sensor_cone_base_center, sensor_cone_base_radius);
 }
 
 double NNAlgaeSensor::sensorValue() const
 {
-	return lastSensorValue;
+	return last_sensor_value;
 }
 
 void NNAlgaeSensor::printSensorValue(ostream& out) const
 {
-	out << "Current sensor value is: " << lastSensorValue << endl;
+	out << "Current sensor value is: " << last_sensor_value << endl;
 }

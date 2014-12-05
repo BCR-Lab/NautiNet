@@ -39,9 +39,9 @@ Matrix make3DTranslationMatrix(double deltaX, double deltaY, double deltaZ)
 {
 	Matrix t(IDENTITY, 4);
 	
-	t(0,3) = deltaX;
-	t(1,3) = deltaY;
-	t(2,3) = deltaZ;
+	t(3,0) = deltaX;
+	t(3,1) = deltaY;
+	t(3,2) = deltaZ;
 	
 	return t;
 }
@@ -66,10 +66,7 @@ Matrix rotationMatrixFromPoints(Point3D p, Point3D q)
 {
 	Matrix r(IDENTITY, 4);
 	
-	cout << "Identity matrix:\n";
-	r.print();
-	
-	// Compute the axis deltas.
+	// Compute the deltas along each axis.
 	double deltaX = q.x - p.x;
 	double deltaY = q.y - p.y;
 	double deltaZ = q.z - p.z;
@@ -77,8 +74,6 @@ Matrix rotationMatrixFromPoints(Point3D p, Point3D q)
 	// Compute the linear distance.
 	double distance = Point3D::distance(p, q);
 
-	cout << "Distance between cone apex and base center: " << distance << endl;
-	
 	// Compute the angles of rotation around each axis.
 	double angleX = deltaY > 0 ? asin(deltaZ / distance) : -1 * asin(deltaZ / distance) + M_PI;
 	double angleY = deltaZ > 0 ? asin(deltaX / distance) : -1 * asin(deltaX / distance) + M_PI;
@@ -86,9 +81,6 @@ Matrix rotationMatrixFromPoints(Point3D p, Point3D q)
 	
 	// Create unified rotation matrix.
 	r *= make3DRotationMatrix(X, angleX) * make3DRotationMatrix(Y, angleY) * make3DRotationMatrix(Z, angleZ);
-	
-	cout << "Unified rotation matrix:\n";
-	r.print();
 	
 	return r;
 }
@@ -107,7 +99,5 @@ Matrix pointVectorFromPoint(Point3D p)
 
 Point3D pointFromPointVector(Matrix m)
 {
-	Point3D p(m(0,0), m(0,1), m(0,2));
-	
-	return p;
+	return Point3D(m(0,0), m(0,1), m(0,2));
 }
