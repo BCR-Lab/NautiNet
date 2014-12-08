@@ -32,6 +32,9 @@ Matrix make3DRotationMatrix(ROTATION_AXIS axis, double angle)
 			break;
 	}
 	
+	// Compensation for reversed order of application of transformation matrices to points!
+	r.transpose();
+	
 	return r;
 }
 
@@ -39,9 +42,12 @@ Matrix make3DTranslationMatrix(double deltaX, double deltaY, double deltaZ)
 {
 	Matrix t(IDENTITY, 4);
 	
-	t(3,0) = deltaX;
-	t(3,1) = deltaY;
-	t(3,2) = deltaZ;
+	t(0,3) = deltaX;
+	t(1,3) = deltaY;
+	t(2,3) = deltaZ;
+	
+	// Compensation for reversed order of application of transformation matrices to points!
+	t.transpose();
 	
 	return t;
 }
@@ -53,6 +59,9 @@ Matrix make3DScaleMatrix(double xScale, double yScale, double zScale)
 	s(0,0) = xScale;
 	s(1,1) = yScale;
 	s(2,2) = zScale;
+	
+	// Compensation for reversed order of application of transformation matrices to points!
+	s.transpose();
 	
 	return s;
 }
@@ -79,8 +88,12 @@ Matrix rotationMatrixFromPoints(Point3D p, Point3D q)
 	double angleY = deltaZ > 0 ? asin(deltaX / distance) : -1 * asin(deltaX / distance) + M_PI;
 	double angleZ = deltaX > 0 ? asin(deltaY / distance) : -1 * asin(deltaY / distance) + M_PI;
 	
+	printf("%f, %f, %f\n", angleX, angleY, angleZ);
+	
 	// Create unified rotation matrix.
 	r *= make3DRotationMatrix(X, angleX) * make3DRotationMatrix(Y, angleY) * make3DRotationMatrix(Z, angleZ);
+	
+//	r.print();
 	
 	return r;
 }

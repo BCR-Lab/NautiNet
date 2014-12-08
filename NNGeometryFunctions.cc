@@ -6,7 +6,7 @@ using namespace std;
 bool nn::isPointInCone(Point3D point, Point3D cone_apex, Point3D cone_base_center, double cone_base_radius)
 {
 	// Construct a transformation matrix to represent the orientation of the cone (apex to base center).
-	Matrix cone_orientation(rotationMatrixFromPoints(cone_apex, cone_base_center));
+	Matrix cone_orientation = rotationMatrixFromPoints(cone_apex, cone_base_center);
 	
 	return nn::isPointInCone(point, cone_apex, cone_base_center, cone_base_radius, cone_orientation);
 }
@@ -14,9 +14,12 @@ bool nn::isPointInCone(Point3D point, Point3D cone_apex, Point3D cone_base_cente
 bool nn::isPointInCone(Point3D point, Point3D cone_apex, Point3D cone_base_center, double cone_base_radius, Matrix cone_orientation)
 {
 	// Construct matrices to hold point vectors representing all three key points.
-	Matrix point_vector(pointVectorFromPoint(point));
-	Matrix cone_apex_vector(pointVectorFromPoint(cone_apex));
-	Matrix cone_base_center_vector(pointVectorFromPoint(cone_base_center));
+	Matrix point_vector = pointVectorFromPoint(point);
+	Matrix cone_apex_vector = pointVectorFromPoint(cone_apex);
+	Matrix cone_base_center_vector = pointVectorFromPoint(cone_base_center);
+	
+//	cout << "Pre transformation:\n";
+//	point_vector.print();
 	
 	// Take the transpose of the cone orientation matrix, to get the inverse rotation.
 	cone_orientation.transpose();
@@ -30,12 +33,17 @@ bool nn::isPointInCone(Point3D point, Point3D cone_apex, Point3D cone_base_cente
 	cone_apex_vector *= t;
 	cone_base_center_vector *= t;
 	
+//	cout << "Post transformation:\n";
+//	point_vector.print();
+	
 	// NOTE: at this point (hah), the apex of the cone should be at (0, 0, 0).
 	
 	// Convert the point vectors back into points.
 	point = pointFromPointVector(point_vector);
 	cone_apex = pointFromPointVector(cone_apex_vector);
 	cone_base_center = pointFromPointVector(cone_base_center_vector);
+	
+//	cout << point << " " << cone_apex << " " << cone_base_center << endl;
 	
 	// Now check to see if the point is between the two ends of the cone in its x-dimension:
 	if(point.x < cone_apex.x || point.x > cone_base_center.x)
@@ -45,7 +53,7 @@ bool nn::isPointInCone(Point3D point, Point3D cone_apex, Point3D cone_base_cente
 	// (A conic section parallel to the plane of a cone's base is a circle, and the radius of that circle is proportional to the distance between its center (which lies on the cone's primary axis) and the cone's apex.)
 	double permissible_distance = cone_base_radius * (point.x / cone_base_center.x);
 
-	// Since the cone's primary axis is collinear with the x-axis, the shortest distance from the point to the cone's primary axis is a line that is parallel to the y-z plane, and its x-coordinate is the same as the point's x-coordinate. Its y and z coordinates are zero (because, again, it is collinear with the x-axis).
+	// Since the cone's primary axis is collinear with the x-axis, the shortest distance from the point to the cone's primary axis is a line that is in a plane parallel to the y-z plane, and its x-coordinate is the same as the point's x-coordinate. Its y and z coordinates are zero (because, again, it is collinear with the x-axis).
 	double actual_distance = Point3D::distance(Point3D(point.x, 0, 0), point);
 	return (actual_distance <= permissible_distance);
 }
