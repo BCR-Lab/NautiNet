@@ -18,11 +18,9 @@ bool nn::isPointInCone(Point3D point, Point3D cone_apex, Point3D cone_base_cente
 	Matrix cone_apex_vector = pointVectorFromPoint(cone_apex);
 	Matrix cone_base_center_vector = pointVectorFromPoint(cone_base_center);
 	
-//	cout << "Pre transformation:\n";
-//	point_vector.print();
-	
 	// Take the transpose of the cone orientation matrix, to get the inverse rotation.
 	cone_orientation.transpose();
+
 	// Construct a transformation matrix consisting of a translation to place the cone's apex at the origin followed by a rotation to place the primary axis of the cone on the x-axis, with the base of the cone facing toward positive x.
 	Matrix t(IDENTITY, 4);
 	t *= make3DTranslationMatrix(-1 * cone_apex.x, -1 * cone_apex.y, -1 * cone_apex.z);
@@ -33,9 +31,6 @@ bool nn::isPointInCone(Point3D point, Point3D cone_apex, Point3D cone_base_cente
 	cone_apex_vector *= t;
 	cone_base_center_vector *= t;
 	
-//	cout << "Post transformation:\n";
-//	point_vector.print();
-	
 	// NOTE: at this point (hah), the apex of the cone should be at (0, 0, 0).
 	
 	// Convert the point vectors back into points.
@@ -43,7 +38,7 @@ bool nn::isPointInCone(Point3D point, Point3D cone_apex, Point3D cone_base_cente
 	cone_apex = pointFromPointVector(cone_apex_vector);
 	cone_base_center = pointFromPointVector(cone_base_center_vector);
 	
-//	cout << point << " " << cone_apex << " " << cone_base_center << endl;
+//	cout << "The sensor cone is" << " " << cone_apex << " " << cone_base_center << endl;
 	
 	// Now check to see if the point is between the two ends of the cone in its x-dimension:
 	if(point.x < cone_apex.x || point.x > cone_base_center.x)

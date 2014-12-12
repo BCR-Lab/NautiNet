@@ -23,7 +23,6 @@ void NNAlgaeSensorArray::updateSensorValues()
 	int i = 1;
 	for(vector <NNAlgaeSensor>::iterator sensor = sensor_array.begin(); sensor != sensor_array.end(); sensor++)
 	{
-		cout << "Updating sensor value for sensor # " << i++ << "...\n";
 		(*sensor).updateSensorValue();
 	}
 	
@@ -37,16 +36,11 @@ Matrix NNAlgaeSensorArray::greatestAlgaeConcentrationBearing() const
 	// Index of sensor showing greatest algae concentration.
 	int index = 0;
 	
-	cout << "Orientation of sensor #1:\n";
-	sensor_array[0].orientation().print();
 	cout << "Algae concentration from sensor #1: " << sensor_array[0].sensorValue() << endl;
 	
 	// Look through all the sensor arrays, find the one with the highest value (i.e. reading algae concentration reading), return its orientation.
 	for(int i = 1; i < sensor_array.size(); i++)
 	{
-		cout << "Orientation of sensor #" << i+1 << ":\n";
-		sensor_array[i].orientation().print();
-
 		cout << "Algae concentration from sensor #" << i+1 << ": " << sensor_array[i].sensorValue() << endl;
 	
 		if(sensor_array[i].sensorValue() > sensor_array[index].sensorValue())
@@ -79,4 +73,16 @@ void NNAlgaeSensorArray::printSensorGradient(ostream& out) const
 	out << "Positive z: " << lastAlgaeGradientReading.z_pos_dir_concentration << endl;
 	out << "Negative z: " << lastAlgaeGradientReading.z_neg_dir_concentration << endl;
 	
+}
+
+vector <NNAlgaeSensorInfo> NNAlgaeSensorArray::sensorInfo() const
+{
+	vector <NNAlgaeSensorInfo> sensor_info;
+	
+	for(vector <NNAlgaeSensor>::const_iterator sensor = sensor_array.begin(); sensor != sensor_array.end(); sensor++)
+	{
+		sensor_info.push_back(NNAlgaeSensorInfo(sensor->orientation(), sensor->sensorValue()));
+	}
+	
+	return sensor_info;
 }

@@ -84,14 +84,15 @@ Matrix rotationMatrixFromPoints(Point3D p, Point3D q)
 	double distance = Point3D::distance(p, q);
 
 	// Compute the angles of rotation around each axis.
-	double angleX = deltaY > 0 ? asin(deltaZ / distance) : -1 * asin(deltaZ / distance) + M_PI;
-	double angleY = deltaZ > 0 ? asin(deltaX / distance) : -1 * asin(deltaX / distance) + M_PI;
+//	double angleX = deltaY > 0 ? asin(deltaZ / distance) : -1 * asin(deltaZ / distance) + M_PI;
+	double angleY = -1 * asin(deltaZ / distance);
 	double angleZ = deltaX > 0 ? asin(deltaY / distance) : -1 * asin(deltaY / distance) + M_PI;
 	
-	printf("%f, %f, %f\n", angleX, angleY, angleZ);
+//	printf("dx: %f, dy: %f, dz: %f, distance: %f, angle Y: %f, angle Z: %f\n", deltaX, deltaY, deltaZ, distance, angleY, angleZ);
 	
 	// Create unified rotation matrix.
-	r *= make3DRotationMatrix(X, angleX) * make3DRotationMatrix(Y, angleY) * make3DRotationMatrix(Z, angleZ);
+	r *= make3DRotationMatrix(Y, angleY);
+	r *= make3DRotationMatrix(Z, angleZ);
 	
 //	r.print();
 	

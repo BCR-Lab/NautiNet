@@ -45,30 +45,14 @@ Point3D NNLocomotion::moveFromPointInDirection(Point3D start_point, Point3D dire
 
 Point3D NNLocomotion::moveFromPointInDirection(Point3D start_point, Matrix direction_matrix, double distance)
 {
-	cout << "Moving from point " << start_point << endl;
-	
 	// Create a new point, shifted from the origin along the x axis, by distance.
 	Matrix point = pointVectorFromPoint(Point3D(distance, 0, 0));
-	
-	cout << "In direction represented by\n";
-	direction_matrix.print();
 	
 	// Rotate the point about the origin with the given rotation matrix...
 	point *= direction_matrix;
 	
-	cout << "Movement vector comes out to\n";
-	point.print();
-	
-	Matrix translation_matrix = translationMatrixFromPoint(start_point);
-	cout << "Translation matrix from origin to start point is\n";
-	translation_matrix.print();
-	
-	// Translate the point to the start point (now properly moved by the indicated direction and distance).
-	point *= translation_matrix;
-	//translationMatrixFromPoint(start_point);
-	
-	cout << "New point is ";
-	point.print();
+	// Translate the point to the start point.
+	point *= translationMatrixFromPoint(start_point);
 	
 	return pointFromPointVector(point);
 }

@@ -33,6 +33,22 @@ struct NNAlgaeSensorGradient
 		{ }
 };
 
+struct NNAlgaeSensorInfo
+{
+	Matrix orientation;
+	double sensor_value;
+	
+	NNAlgaeSensorInfo() :
+		orientation (IDENTITY, 4),
+		sensor_value (0.0)
+		{ }
+		
+	NNAlgaeSensorInfo(Matrix orientation, double sensor_value) :
+		orientation (orientation),
+		sensor_value (sensor_value)
+		{ }
+};
+
 /*
  An NNAlgaeSensorArray keeps and updates an NNAlgaeSensorGradient object, which represents the last known value for the gradient of algae concentration around the robonaut.
  */
@@ -59,14 +75,18 @@ class NNAlgaeSensorArray
 		
 		NNAlgaeSensorArray();
 		
-		// FUNCTIONS
+		// ACCESSORS
 		
-		void updateSensorValues();
-	
 		NNAlgaeSensorGradient algaeGradient() const;
 		
 		Matrix greatestAlgaeConcentrationBearing() const;
 		
+		vector <NNAlgaeSensorInfo> sensorInfo() const;
+		
+		// FUNCTIONS
+		
+		void updateSensorValues();
+	
 		void setRobot(NNRobot* robot);
 		
 		void addSensor(const NNAlgaeSensor& sensor);

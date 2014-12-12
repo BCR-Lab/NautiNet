@@ -11,6 +11,14 @@
 #include "NNLocomotion.h"
 using namespace std;
 
+typedef enum
+{
+	START,
+	FIND_CLOUD_EDGE,
+	HOLD_CLOUD_EDGE,
+	END
+} NN_ROBOT_STATE;
+
 class NNRobot
 {
 	private:
@@ -26,6 +34,12 @@ class NNRobot
 		// Orientation of the robot in space, relative to the absolute Cartesian coordinate axes.
 		Matrix orientation_;
 		
+		// Current state of the robot (on the FSA control diagram).
+		NN_ROBOT_STATE current_state;
+		
+		// Direction of movement.
+		Matrix direction_;
+		
 		// Sensor arrays:
 		
 		NNAlgaeSensorArray algae_sensor_array;
@@ -38,8 +52,12 @@ class NNRobot
 		
 		// FUNCTIONS
 		
-		void timeTick();
-	
+		NN_ROBOT_STATE stateTransitionFromStart();
+		NN_ROBOT_STATE stateTransitionFromFindCloudEdge();
+		NN_ROBOT_STATE stateTransitionFromHoldCloudEdge();
+		
+		bool atCloudEdge();
+		
 	public:
 	
 		// CONSTRUCTORS
@@ -62,6 +80,9 @@ class NNRobot
 			
 		string status()
 			{ return "Robot is OK."; }
+			
+		NN_ROBOT_STATE state()
+			{ return current_state; }
 			
 		// FUNCTIONS
 		
