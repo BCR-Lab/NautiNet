@@ -51,8 +51,13 @@ Point3D NNLocomotion::moveFromPointInDirection(Point3D start_point, Matrix direc
 	// Rotate the point about the origin with the given rotation matrix...
 	point *= direction_matrix;
 	
-	// Translate the point to the start point.
-	point *= translationMatrixFromPoint(start_point);
+	Matrix translation_matrix = translationMatrixFromPoint(start_point);
+	// Translate the point to the start point (now properly moved by the indicated direction and distance).
+	point *= translation_matrix;
+	//translationMatrixFromPoint(start_point);
+	
+	cout << "New point is ";
+	point.print();
 	
 	return pointFromPointVector(point);
 }
