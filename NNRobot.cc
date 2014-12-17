@@ -99,14 +99,14 @@ bool NNRobot::atCloudEdge()
 	{
 		if(sensor->sensor_value > 0)
 		{
-			cout << "Sensor pointing in\n";
-			sensor->orientation.print();
-			cout << " senses algae.\n";
+//			cout << "Sensor pointing in\n";
+//			sensor->orientation.print();
+//			cout << " senses algae.\n";
 			num_sensors_showing_algae++;
 		}
 	}
 	
-	printf("Out of %d sensors, %d sense algae.\n", sensor_values.size(), num_sensors_showing_algae);
+//	printf("Out of %d sensors, %d sense algae.\n", sensor_values.size(), num_sensors_showing_algae);
 	
 	return num_sensors_showing_algae <= 1;
 }
@@ -138,7 +138,7 @@ void NNRobot::run()
 				break;
 		}
 		
-		cout << "Robot position: " << this->position_ << endl;
+//		cout << "Robot position: " << this->position_ << endl;
 		
 //		cout << ".";
 		time_tick++;
@@ -146,4 +146,5 @@ void NNRobot::run()
 	}
 	
 	cout << endl << "Time ticks passed: " << time_tick << endl;
+//	cout << this->position_ << endl;
 }

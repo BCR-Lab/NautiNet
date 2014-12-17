@@ -15,9 +15,9 @@ int main()
 	world.fileNameScheme(NO_LEADING_ZEROES);	
 	world.loadData();
 	
-//	for(int i = 0; i < 100; i++)
-//	{
-//		cout << "Creating robot...\n";
+	for(int i = 0; i < 100; i++)
+	{
+		cout << "Creating robot...\n";
 		
 		NNRobot robot;
 		
@@ -49,7 +49,7 @@ int main()
 		robot.run();
 		
 		cout << robot.position() << endl;
-//	}
+	}
 	
 	return 0;
 }

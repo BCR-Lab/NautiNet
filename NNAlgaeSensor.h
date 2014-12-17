@@ -11,7 +11,7 @@ class NNWorld;
 class NNRobot;
 
 // The size of the cone in which we get the algae density (that is, the luminescence value in the relevant frequency) is not something we will have to define in an actual, running-on-hardware implementation (it will simply depend on the sensor's capabilities), but for simulation purposes we do have to know it.
-#define SENSOR_CONE_HEIGHT 0.1	// 10 cm, in meters.
+#define SENSOR_CONE_HEIGHT 0.5	// 10 cm, in meters.
 #define SENSOR_CONE_ANGLE 54.0 * M_PI / 180.0	// 54 degrees, in radians.
 
 class NNAlgaeSensor
