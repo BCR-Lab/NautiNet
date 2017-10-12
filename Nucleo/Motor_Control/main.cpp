@@ -8,7 +8,7 @@ PwmOut motor_IN1(D3);
 int main() {
 	float waittime = 2.0;
 	motor_IN2 = 0;
-	//motor_IN1.period(0.020f);
+	motor_IN1.period(0.001f);
 	float outputCycle = 0.0;
 
     while(1) {
