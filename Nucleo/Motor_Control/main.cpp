@@ -1,3 +1,10 @@
+/*
+ * Davis Chen
+ */
+
+
+
+
 #include "mbed.h"
 
 // length of 1 PWM cycle (in seconds)
@@ -14,7 +21,7 @@ PwmOut motor_IN2(D4);
 
 /*
  * Ramps up motor from 0% to 100%
- * Input:
+ * Arguments:
  *  ramp_time - the amount of time in seconds that it will take to ramp from 0-100%
 */
 void rampUpMotor(float ramp_time) {
@@ -27,7 +34,7 @@ void rampUpMotor(float ramp_time) {
 
 /*
  * Ramps down motor from 100% to 0%
- * Input:
+ * Arguments:
  *  ramp_time - the amount of time in seconds that it will take to ramp from 100-0%
 */
 void rampDownMotor(float ramp_time) {
