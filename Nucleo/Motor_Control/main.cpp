@@ -2,6 +2,7 @@
 
 // length of 1 PWM cycle (in seconds)
 const float PWM_PERIOD = 0.001;
+const float ramp_step = 0.01;
 
 // these should be set up by user input
 const float RAMP_UP_TIME = 5.0;
@@ -18,7 +19,7 @@ PwmOut motor_IN2(D4);
  *  ramp_time - the amount of time in seconds that it will take to ramp from 0-100%
 */
 void rampUpMotor(float ramp_time) {
-	float wait_interval = ramp_time/ramp_step;
+	float wait_interval = ramp_time*ramp_step;
 	for (int i=0; i<1.0; i+=ramp_step) {
 		motor_IN1.write(i);
 		wait(wait_interval);
@@ -31,7 +32,7 @@ void rampUpMotor(float ramp_time) {
  *  ramp_time - the amount of time in seconds that it will take to ramp from 100-0%
 */
 void rampDownMotor(float ramp_time) {
-	float wait_interval = ramp_time/ramp_step;
+	float wait_interval = ramp_time*ramp_step;
 	for (int i=1.0; i>0.0; i-=ramp_step) {
 		motor_IN1.write(i);
 		wait(wait_interval);
