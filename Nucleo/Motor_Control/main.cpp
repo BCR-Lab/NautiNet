@@ -5,7 +5,7 @@ const float PWM_PERIOD = 0.001;
 const float ramp_step = 0.01;
 
 // these should be set up by user input
-const float RAMP_UP_TIME = 5.0;
+const float RAMP_UP_TIME = 2.0;
 const float RAMP_DOWN_TIME = 5.0;
 const float TIME_AT_MAX = 2.5;
 
@@ -16,11 +16,11 @@ PwmOut motor_IN2(D4);
 /*
  * Ramps up motor from 0% to 100%
  * Input:
- *  ramp_time - the amount of time in seconds that it will take to ramp from 0-100%
+ *  ramp_duration - the amount of time in seconds that it will take to ramp from 0-100%
 */
-void rampUpMotor(float ramp_time) {
-	float wait_interval = ramp_time*ramp_step;
-	for (int i=0; i<1.0; i+=ramp_step) {
+void rampUpMotor(float ramp_duration) {
+	float wait_interval = ramp_duration*ramp_step;
+	for (float i=0; i<1.0; i+=ramp_step) {
 		motor_IN1.write(i);
 		wait(wait_interval);
 	}
@@ -29,11 +29,11 @@ void rampUpMotor(float ramp_time) {
 /*
  * Ramps down motor from 100% to 0%
  * Input:
- *  ramp_time - the amount of time in seconds that it will take to ramp from 100-0%
+ *  ramp_duration - the amount of time in seconds that it will take to ramp from 100-0%
 */
-void rampDownMotor(float ramp_time) {
-	float wait_interval = ramp_time*ramp_step;
-	for (int i=1.0; i>0.0; i-=ramp_step) {
+void rampDownMotor(float ramp_duration) {
+	float wait_interval = ramp_duration*ramp_step;
+	for (float i=1.0; i>0.0; i-=ramp_step) {
 		motor_IN1.write(i);
 		wait(wait_interval);
 	}
@@ -48,8 +48,6 @@ int main() {
 		rampUpMotor(RAMP_UP_TIME);
 		wait(TIME_AT_MAX);
 		rampDownMotor(RAMP_DOWN_TIME);
-		wait(5); // this line will not be needed when user input is set up
+		wait(2); // this line will not be needed when user input is set up
 	}
 }
-
-
