@@ -2,6 +2,10 @@
  * Davis Chen
  */
 
+/*
+ * Known Issues
+ *   Input that is longer than 32 characters may result in anomalous output
+ */
 
 #include "mbed.h"
 
@@ -51,31 +55,30 @@ int main() {
 	float time_at_max;
 
 	while(1) {
-		char c[8];
+		char c[32];
 
-		int items_read = 0;
 		pc.printf("Enter ramp up time: ");
-		pc.gets(c, 8);
+		pc.gets(c, 32);
 		while(sscanf(c, "%f", &ramp_up_time) == 0) {
 			pc.printf("\nError: Not a number\n");
 			pc.printf("Enter ramp up time: ");
-			pc.gets(c, 8);
+			pc.gets(c, 32);
 		}
 
 		pc.printf("\nEnter time at max: ");
-		pc.gets(c, 8);
+		pc.gets(c, 32);
 		while(sscanf(c, "%f", &time_at_max) == 0) {
 			pc.printf("\nError: Not a number\n");
 			pc.printf("Enter time at max: ");
-			pc.gets(c, 8);
+			pc.gets(c, 32);
 		}
 
 		pc.printf("\nEnter ramp down time: ");
-		pc.gets(c, 8);
+		pc.gets(c, 32);
 		while(sscanf(c, "%f", &ramp_down_time) == 0) {
 			pc.printf("\nError: Not a number\n");
 			pc.printf("Enter ramp down time: ");
-			pc.gets(c, 8);
+			pc.gets(c, 32);
 		}
 
 		pc.printf("\nRamping up for %f seconds\n", ramp_up_time);
