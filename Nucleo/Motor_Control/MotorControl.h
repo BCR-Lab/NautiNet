@@ -11,12 +11,14 @@
 class MotorControl {
 	private:
 		Timer timer;
+		int prevTime;
 
 		PwmOut motor_IN1;
 		PwmOut motor_IN2;
 
 		enum State {rampUp, running, rampDown, stopped, off};
 		State currentState;
+		State prevState;
 		bool repeat = true;
 
 		// length of 1 PWM cycle (in seconds)
@@ -29,6 +31,8 @@ class MotorControl {
 		float off_time = 1.0;
 
 		float amplitude = 1.0;
+
+		int phaseStartTime;
 
 	public:
 
@@ -54,4 +58,4 @@ class MotorControl {
 		void run();
 };
 
-#endif MOTORCONTROL_H
+#endif
