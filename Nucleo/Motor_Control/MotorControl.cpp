@@ -6,78 +6,109 @@ MotorControl::MotorControl(PinName pin1, PinName pin2) : motor_IN1(pin1), motor_
 	motor_IN2.write(0);
 }
 
-MotorControl::MotorControl(PinName pin1, PinName pin2, float rise_time, float on_time, float decay_time, float off_time, float amplitude) :
+MotorControl::MotorControl(PinName pin1, PinName pin2, float rise_time_s, float on_time_s, float decay_time_s, float off_time_s, float amplitude) :
 	motor_IN1(pin1),
 	motor_IN2(pin2),
-	rise_time(rise_time),
-	on_time(on_time),
-	decay_time(decay_time),
-	off_time(off_time),
+	rise_time_us(),
+	on_time_us(),
+	decay_time_us(),
+	off_time_us(),
 	amplitude(amplitude) {
 
-	timer.start();
+		rise_time_us = seconds_to_microseconds(rise_time_s);
+		on_time_us = seconds_to_microseconds(on_time_s);
+		decay_time_us = seconds_to_microseconds(decay_time_s);
+		off_time_us = seconds_to_microseconds(off_time_s);
+
 	motor_IN1.period(PWM_PERIOD);
 	motor_IN2.write(0);
+	timer.start();
 }
 
 void MotorControl::rampUp() {
-	static int wait_interval = rise_time/RAMP_STEPS;
-	static float step_size = amplitude/RAMP_STEPS;
-	static float duty_cycle = 0;
+	static int wait_interval;
+	static float duty_cycle_step;
+	static float duty_cycle;
+	static bool phase_start = true;
 	// execute once at start of phase
-	if (prevState != rampUp) {
-		prevState =rampUp;
-		wait_interval = rise_time/RAMP_STEPS;
-		step_size = amplitude/RAMP_STEPS;
+	if (phase_start) {
+		phase_start = false;
+		wait_interval = rise_time_us/RAMP_STEPS;
+		duty_cycle_step = amplitude/RAMP_STEPS;
 		duty_cycle = 0;
 		prevTime = timer.read_us();
 		phaseStartTime = prevTime;
 	}
 
+
 	int currentTime = timer.read_us();
 	if (currentTime - prevTime >= wait_interval) {
-		duty_cycle += step_size;
+		duty_cycle += duty_cycle_step;
 		motor_IN1.write(duty_cycle);
 	}
-	if (currentTime - phaseStartTime >= rise_time) {
+	if (currentTime - phaseStartTime >= rise_time_us) {
 		currentState = running;
+		phase_start = true;
 	}
 	
 }
 
 void MotorControl::rampDown() {
+	static int wait_interval;
+	static float duty_cycle_step;
+	static float duty_cycle;
+	static bool phase_start = true;
 	// execute once at start of phase
-	if (prevState != rampDown) {
-		prevState = rampDown;
+	if (phase_start) {
+		phase_start = false;
+		wait_interval = decay_time_us/RAMP_STEPS;
+		duty_cycle_step = amplitude/RAMP_STEPS;
+		duty_cycle = amplitude;
 		prevTime = timer.read_us();
+		phaseStartTime = prevTime;
+	}
+
+
+	int currentTime = timer.read_us();
+	if (currentTime - prevTime >= wait_interval) {
+		duty_cycle -= duty_cycle_step;
+		motor_IN1.write(duty_cycle);
+	}
+	if (currentTime - phaseStartTime >= decay_time_us) {
+		currentState = stopped;
+		phase_start = true;
 	}
 }
 
 void MotorControl::runMotor() {
+	static bool phase_start = true;
 	// execute once at start of phase
-	if (prevState != running) {
+	if (phase_start) {
+		phase_start = false;
 		motor_IN1.write(amplitude);
-		prevState = running;
 		prevTime = timer.read_us();
 		phaseStartTime = prevTime;
 	}
 
 	int currentTime = timer.read_us();
-	if (currentTime - phaseStartTime >= on_time) {
+	if (currentTime - phaseStartTime >= on_time_us) {
 		currentState = rampDown;
+		phase_start = true;
 	}
 }
 
 void MotorControl::stopMotor() {
+	static bool phase_start = true;
 	// execute once at start of phase
-	if (prevState != stopped) {
+	if (phase_start) {
+		phase_start = false;
 		motor_IN1.write(0);
-		prevState = stopped;
 		prevTime = timer.read_us();
 	}
 
 	int currentTime = timer.read_us();
-	if (currentTime - prevTime >= off_time) {
+	if (currentTime - prevTime >= off_time_us) {
+		phase_start = true;
 		if (repeat)
 			currentState = rampUp;
 		else
@@ -85,12 +116,31 @@ void MotorControl::stopMotor() {
 	}
 }
 
-void setRampUpTime(float value) {rise_time = value;}
-void setRampDownTime(float value) {decay_time = value;}
-void setOnTime(float value) {on_time = value;}
-void setOffTime(float value) {off_time = value;}
+static int seconds_to_microseconds(int n) {
+	if (n < 0)
+		return 0;
+	// 1 million microseconds in a second
+	return n/1000000;
+}
 
-void setAmplitude(float value) {amplitude = value;}
+void MotorControl::setRampUpTime_s(float time_s) {
+	rise_time_us = seconds_to_microseconds(time_s);
+}
+
+
+void MotorControl::setRampDownTime_s(float time_s) {
+	decay_time_us = seconds_to_microseconds(time_s);
+}
+
+void MotorControl::setOnTime_s(float time_s) {
+	on_time_us = seconds_to_microseconds(time_s);
+}
+
+void MotorControl::setOffTime_s(float time_s) {
+	off_time_us = seconds_to_microseconds(time_s);
+}
+
+void MotorControl::setAmplitude(float value) {amplitude = value;}
 
 void MotorControl::run() {
 	switch(currentState) {

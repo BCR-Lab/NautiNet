@@ -9,6 +9,22 @@
 #include "Timer.h"
 
 class MotorControl {
+	public:
+
+		MotorControl(PinName pin1, PinName pin2);
+		MotorControl(PinName pin1, PinName pin2, float rise_time_us, float on_time_us, float decay_time_us, float off_time_us, float amplitude);
+
+		void setRampUpTime_s(float time_s);
+		void setRampDownTime_s(float time_s);
+		void setOnTime_s(float time_s);
+		void setOffTime_s(float time_s);
+
+		void setAmplitude(float value);
+
+		void setRepeat();
+
+		void run();
+
 	private:
 		Timer timer;
 		int prevTime;
@@ -18,44 +34,30 @@ class MotorControl {
 
 		enum State {rampUp, running, rampDown, stopped, off};
 		State currentState;
-		State prevState;
 		bool repeat = true;
 
 		// length of 1 PWM cycle (in seconds)
-		const float PWM_PERIOD = 0.001;
-		const int RAMP_STEPS = 100;
+		static const float PWM_PERIOD = 0.001;
+		static const int RAMP_STEPS = 100;
 
-		float rise_time = 1.0;
-		float on_time = 1.0;
-		float decay_time = 1.0;
-		float off_time = 1.0;
+		// length of each phase in microseconds
+		int rise_time_us = 1000000;
+		int on_time_us = 1000000;
+		int decay_time_us = 1000000;
+		int off_time_us = 1000000;
 
 		float amplitude = 1.0;
 
 		int phaseStartTime;
 
-	public:
-
-		MotorControl(PinName pin1, PinName pin2);
-		MotorControl(PinName pin1, PinName pin2, float rise_time, float on_time, float decay_time, float off_time, float amplitude);
-
-		// Ramps up motor linearly until it reaches the desired amplitude
+		// Ramps up motor linearly until it reaches the set amplitude
 		void rampUp();
 
-		// Stop motor by ramping down linearly
+		// Stop motor by ramping down linearly from the set amplitude
 		void rampDown();
 
 		void runMotor();
 		void stopMotor();
-
-		void setRampUpTime(float value);
-		void setRampDownTime(float value);
-		void setOnTime(float value);
-		void setOffTime(float value);
-
-		void setAmplitude(float value);
-
-		void run();
 };
 
 #endif
