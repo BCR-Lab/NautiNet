@@ -2,90 +2,17 @@
  * Davis Chen
  */
 
-/*
- * Known Issues
- *   Input that is longer than 32 characters may result in anomalous output
- */
-
 #include "mbed.h"
-
-// length of 1 PWM cycle (in seconds)
-const float PWM_PERIOD = 0.001;
-const float RAMP_STEP = 0.01;
-
-// Initialize output pins to motor driver
-PwmOut motor_IN1(D3);
-PwmOut motor_IN2(D4);
-
-Serial pc(SERIAL_TX, SERIAL_RX);
-
-/*
- * Ramps up motor from 0% to 100%
- * Arguments:
- *  ramp_duration - the amount of time in seconds that it will take to ramp from 0-100%
-*/
-void rampUpMotor(float ramp_duration) {
-	float wait_interval = ramp_duration*RAMP_STEP;
-	for (float i=0; i<1.0; i+=RAMP_STEP) {
-		motor_IN1.write(i);
-		wait(wait_interval);
-	}
-}
-
-/*
- * Ramps down motor from 100% to 0%
- * Arguments:
- *  ramp_duration - the amount of time in seconds that it will take to ramp from 100-0%
-*/
-void rampDownMotor(float ramp_duration) {
-	float wait_interval = ramp_duration*RAMP_STEP;
-	for (float i=1.0; i>0.0; i-=RAMP_STEP) {
-		motor_IN1.write(i);
-		wait(wait_interval);
-	}
-}
+#include "MotorControl.h"
 
 int main() {
-	motor_IN1.period(PWM_PERIOD);
-	// set to 0; motor_IN2 is used when running motor in reverse direction
-	motor_IN2.write(0);
-
-	float ramp_up_time;
-	float ramp_down_time;
-	float time_at_max;
+	MotorControl m1(D9,D5, 1, 0, 1, 1, .5);
+	m1.start();
+	MotorControl m2(D10,D6, 1, 3, 1, 1, 1.0);
+	m2.start();
 
 	while(1) {
-		char c[32];
-
-		pc.printf("Enter ramp up time: ");
-		pc.gets(c, 32);
-		while(sscanf(c, "%f", &ramp_up_time) == 0) {
-			pc.printf("\nError: Not a number\n");
-			pc.printf("Enter ramp up time: ");
-			pc.gets(c, 32);
-		}
-
-		pc.printf("\nEnter time at max: ");
-		pc.gets(c, 32);
-		while(sscanf(c, "%f", &time_at_max) == 0) {
-			pc.printf("\nError: Not a number\n");
-			pc.printf("Enter time at max: ");
-			pc.gets(c, 32);
-		}
-
-		pc.printf("\nEnter ramp down time: ");
-		pc.gets(c, 32);
-		while(sscanf(c, "%f", &ramp_down_time) == 0) {
-			pc.printf("\nError: Not a number\n");
-			pc.printf("Enter ramp down time: ");
-			pc.gets(c, 32);
-		}
-
-		pc.printf("\nRamping up for %f seconds\n", ramp_up_time);
-		rampUpMotor(ramp_up_time);
-		pc.printf("Max output for %f seconds\n", time_at_max);
-		wait(time_at_max);
-		pc.printf("Ramping down for %f seconds\n", ramp_down_time);
-		rampDownMotor(ramp_down_time);
+		m1.run();
+		m2.run();
 	}
 }

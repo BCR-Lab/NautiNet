@@ -46,6 +46,7 @@ PROJECT := Motor_Control
 ###############################################################################
 # Objects and Paths
 
+OBJECTS += MotorControl/MotorControl.o
 OBJECTS += main.o
 
  SYS_OBJECTS += mbed/TARGET_NUCLEO_F303K8/TOOLCHAIN_GCC_ARM/stm32f3xx_hal_smartcard.o
@@ -150,6 +151,7 @@ OBJECTS += main.o
 
 INCLUDE_PATHS += -I../
 INCLUDE_PATHS += -I../.
+INCLUDE_PATHS += -I../MotorControl
 INCLUDE_PATHS += -I../mbed/.
 INCLUDE_PATHS += -I../mbed/TARGET_NUCLEO_F303K8
 INCLUDE_PATHS += -I../mbed/TARGET_NUCLEO_F303K8/TARGET_STM
@@ -173,7 +175,7 @@ LINKER_SCRIPT ?= ../mbed/TARGET_NUCLEO_F303K8/TOOLCHAIN_GCC_ARM/STM32F303X8.ld
 
 AS      = 'arm-none-eabi-gcc' '-x' 'assembler-with-cpp' '-c' '-Wall' '-Wextra' '-Wno-unused-parameter' '-Wno-missing-field-initializers' '-fmessage-length=0' '-fno-exceptions' '-fno-builtin' '-ffunction-sections' '-fdata-sections' '-funsigned-char' '-MMD' '-fno-delete-null-pointer-checks' '-fomit-frame-pointer' '-Os' '-DMBED_RTOS_SINGLE_THREAD' '-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=softfp'
 CC      = 'arm-none-eabi-gcc' '-std=gnu99' '-c' '-Wall' '-Wextra' '-Wno-unused-parameter' '-Wno-missing-field-initializers' '-fmessage-length=0' '-fno-exceptions' '-fno-builtin' '-ffunction-sections' '-fdata-sections' '-funsigned-char' '-MMD' '-fno-delete-null-pointer-checks' '-fomit-frame-pointer' '-Os' '-DMBED_RTOS_SINGLE_THREAD' '-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=softfp'
-CPP     = 'arm-none-eabi-g++' '-std=gnu++98' '-fno-rtti' '-Wvla' '-c' '-Wall' '-Wextra' '-Wno-unused-parameter' '-Wno-missing-field-initializers' '-fmessage-length=0' '-fno-exceptions' '-fno-builtin' '-ffunction-sections' '-fdata-sections' '-funsigned-char' '-MMD' '-fno-delete-null-pointer-checks' '-fomit-frame-pointer' '-Os' '-DMBED_RTOS_SINGLE_THREAD' '-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=softfp'
+CPP     = 'arm-none-eabi-g++' '-std=gnu++11' '-fno-rtti' '-Wvla' '-c' '-Wall' '-Wextra' '-Wno-unused-parameter' '-Wno-missing-field-initializers' '-fmessage-length=0' '-fno-exceptions' '-fno-builtin' '-ffunction-sections' '-fdata-sections' '-funsigned-char' '-MMD' '-fno-delete-null-pointer-checks' '-fomit-frame-pointer' '-Os' '-DMBED_RTOS_SINGLE_THREAD' '-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=softfp'
 LD      = 'arm-none-eabi-gcc'
 ELF2BIN = 'arm-none-eabi-objcopy'
 PREPROC = 'arm-none-eabi-cpp' '-E' '-P' '-Wl,--gc-sections' '-Wl,--wrap,main' '-Wl,--wrap,_malloc_r' '-Wl,--wrap,_free_r' '-Wl,--wrap,_realloc_r' '-Wl,--wrap,_memalign_r' '-Wl,--wrap,_calloc_r' '-Wl,--wrap,exit' '-Wl,--wrap,atexit' '-Wl,-n' '--specs=nano.specs' '-mcpu=cortex-m4' '-mthumb' '-mfpu=fpv4-sp-d16' '-mfloat-abi=softfp'
@@ -230,7 +232,7 @@ C_FLAGS += -DTOOLCHAIN_object
 C_FLAGS += -include
 C_FLAGS += mbed_config.h
 
-CXX_FLAGS += -std=gnu++98
+CXX_FLAGS += -std=gnu++11
 CXX_FLAGS += -fno-rtti
 CXX_FLAGS += -Wvla
 CXX_FLAGS += -D__MBED__=1
@@ -293,6 +295,7 @@ ASM_FLAGS += -D__FPU_PRESENT=1
 ASM_FLAGS += -D__MBED_CMSIS_RTOS_CM
 ASM_FLAGS += -D__CMSIS_RTOS
 ASM_FLAGS += -I.
+ASM_FLAGS += -IMotorControl
 ASM_FLAGS += -Imbed/.
 ASM_FLAGS += -Imbed/TARGET_NUCLEO_F303K8
 ASM_FLAGS += -Imbed/TARGET_NUCLEO_F303K8/TARGET_STM
@@ -307,7 +310,11 @@ ASM_FLAGS += -Imbed/hal
 ASM_FLAGS += -Imbed/platform
 
 
-LD_FLAGS :=-Wl,--gc-sections -Wl,--wrap,main -Wl,--wrap,_malloc_r -Wl,--wrap,_free_r -Wl,--wrap,_realloc_r -Wl,--wrap,_memalign_r -Wl,--wrap,_calloc_r -Wl,--wrap,exit -Wl,--wrap,atexit -Wl,-n --specs=nano.specs -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -u _printf_float -u _scanf_float
+LD_FLAGS :=-Wl,--gc-sections -Wl,--wrap,main -Wl,--wrap,_malloc_r -Wl,--wrap,_free_r -Wl,--wrap,_realloc_r -Wl,--wrap,_memalign_r -Wl,--wrap,_calloc_r -Wl,--wrap,exit -Wl,--wrap,atexit -Wl,-n --specs=nano.specs -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+
+#LD_FLAGS += -u _printf_float
+#LD_FLAGS += -u _scanf_float
+
 LD_SYS_LIBS :=-Wl,--start-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys -lmbed -Wl,--end-group
 
 # Tools and Flags
