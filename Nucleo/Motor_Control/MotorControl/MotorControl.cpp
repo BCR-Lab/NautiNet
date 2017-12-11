@@ -7,15 +7,13 @@ static int seconds_to_microseconds(float &n) {
 	return n*1000000;
 }
 
-MotorControl::MotorControl(PinName pin1, PinName pin2) : motor_IN1(pin1), motor_IN2(pin2) {
+MotorControl::MotorControl(PinName pin) : motor_IN1(pin1), motor_IN2(pin2) {
 	timer.start();
-	motor_IN1.period_us(PWM_PERIOD_US);
-	motor_IN2.write(0);
+	motor_IN.period_us(PWM_PERIOD_US);
 }
 
-MotorControl::MotorControl(PinName pin1, PinName pin2, float rise_time_s, float on_time_s, float decay_time_s, float off_time_s, float amplitude) :
-	motor_IN1(pin1),
-	motor_IN2(pin2),
+MotorControl::MotorControl(PinName pin, float rise_time_s, float on_time_s, float decay_time_s, float off_time_s, float amplitude) :
+	motor_IN(pin),
 	rise_time_us(),
 	on_time_us(),
 	decay_time_us(),
@@ -27,8 +25,7 @@ MotorControl::MotorControl(PinName pin1, PinName pin2, float rise_time_s, float 
 	decay_time_us = seconds_to_microseconds(decay_time_s);
 	off_time_us = seconds_to_microseconds(off_time_s);
 
-	motor_IN1.period_us(PWM_PERIOD_US);
-	motor_IN2.write(0);
+	motor_IN.period_us(PWM_PERIOD_US);
 	timer.start();
 }
 
@@ -126,7 +123,6 @@ void MotorControl::setRampUpTime_s(float &time_s) {
 	rise_time_us = seconds_to_microseconds(time_s);
 }
 
-
 void MotorControl::setRampDownTime_s(float &time_s) {
 	decay_time_us = seconds_to_microseconds(time_s);
 }
@@ -139,7 +135,13 @@ void MotorControl::setOffTime_s(float &time_s) {
 	off_time_us = seconds_to_microseconds(time_s);
 }
 
-void MotorControl::setAmplitude(float &value) {amplitude = value;}
+void MotorControl::setAmplitude(float &value) {
+	amplitude = value;
+}
+
+void MotorControl::setRepeat(bool value) {
+	repeat = value;
+}
 
 void MotorControl::run() {
 	switch(currentState) {

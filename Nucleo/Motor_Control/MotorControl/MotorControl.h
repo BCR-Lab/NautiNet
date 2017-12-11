@@ -10,9 +10,14 @@
 
 class MotorControl {
 	public:
+		// length of 1 PWM cycle (in microseconds)
+		static const int PWM_PERIOD_US = 1000;
+		static const int RAMP_STEPS = 100;
 
-		MotorControl(PinName pin1, PinName pin2);
-		MotorControl(PinName pin1, PinName pin2, float rise_time_us, float on_time_us, float decay_time_us, float off_time_us, float amplitude);
+		enum State {rampUp, running, rampDown, stopped, off};
+
+		MotorControl(PinName pin);
+		MotorControl(PinName pin, float rise_time_us, float on_time_us, float decay_time_us, float off_time_us, float amplitude);
 
 		void setRampUpTime_s(float &time_s);
 		void setRampDownTime_s(float &time_s);
@@ -29,17 +34,12 @@ class MotorControl {
 	private:
 		Timer timer;
 		int prevTime;
+		int phaseStartTime;
 
-		PwmOut motor_IN1;
-		PwmOut motor_IN2;
+		PwmOut motor_IN;
 
-		enum State {rampUp, running, rampDown, stopped, off};
 		State currentState;
 		bool repeat = true;
-
-		// length of 1 PWM cycle (in seconds)
-		static const int PWM_PERIOD_US = 1000;
-		static const int RAMP_STEPS = 100;
 
 		// length of each phase in microseconds
 		// each phase is set to 1 second by default
@@ -63,9 +63,6 @@ class MotorControl {
 
 		bool running_phase_start = true;
 		bool stopped_phase_start = true;
-
-
-		int phaseStartTime;
 
 		// Ramps up motor linearly until it reaches the set amplitude
 		void rampUpMotor();
