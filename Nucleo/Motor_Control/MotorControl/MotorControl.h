@@ -2,6 +2,10 @@
  * Davis Chen
  */
 
+/* floats and seconds
+ * may be better to use only ints and microseconds and let the calling program handle type conversions
+ */
+
 #ifndef MOTORCONTROL_H
 #define MOTORCONTROL_H
 
@@ -19,21 +23,29 @@ class MotorControl {
 		MotorControl(PinName pin);
 		MotorControl(PinName pin, float rise_time_us, float on_time_us, float decay_time_us, float off_time_us, float amplitude);
 
-		void setRampUpTime_s(float &time_s);
-		void setRampDownTime_s(float &time_s);
-		void setOnTime_s(float &time_s);
-		void setOffTime_s(float &time_s);
+		void setRiseTime_s(const float &time_s);
+		void setDecayTime_s(const float &time_s);
+		void setOnTime_s(const float &time_s);
+		void setOffTime_s(const float &time_s);
 
-		void setAmplitude(float &value);
+		void setRiseTime_us(const int &time_s);
+		void setDecayTime_us(const int &time_s);
+		void setOnTime_us(const int &time_s);
+		void setOffTime_us(const int &time_s);
 
-		void setRepeat(bool value);
+		void setAmplitude(const float &value);
+
+		void setRepeat(const bool &value);
 
 		void run();
 		void start();
 
+		float getAmplitude() {return amplitude;}
+		float getDutyCycle() {return duty_cycle;}
 	private:
 		Timer timer;
 		int prevTime;
+		int currentTime;
 		int phaseStartTime;
 
 		PwmOut motor_IN;
@@ -50,19 +62,18 @@ class MotorControl {
 
 		// Amplitude as a
 		float amplitude = 1.0;
+		float duty_cycle;
 
-		bool ramp_up_phase_start = true;
+		bool ramp_up_phase_begin = true;
 		int ramp_up_wait_interval;
 		float ramp_up_duty_cycle_step;
-		float ramp_up_duty_cycle;
 
-		bool ramp_down_phase_start = true;
+		bool ramp_down_phase_begin = true;
 		int ramp_down_wait_interval;
 		float ramp_down_duty_cycle_step;
-		float ramp_down_duty_cycle;
 
-		bool running_phase_start = true;
-		bool stopped_phase_start = true;
+		bool running_phase_begin = true;
+		bool stopped_phase_begin = true;
 
 		// Ramps up motor linearly until it reaches the set amplitude
 		void rampUpMotor();

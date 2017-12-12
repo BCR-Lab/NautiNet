@@ -39,7 +39,7 @@ VPATH = ..
 ###############################################################################
 # Project settings
 
-PROJECT := Motor_Control
+PROJECT := NautiNet_Motor_Control
 
 
 # Project settings
@@ -47,7 +47,8 @@ PROJECT := Motor_Control
 # Objects and Paths
 
 OBJECTS += MotorControl/MotorControl.o
-OBJECTS += main.o
+#OBJECTS += main.o
+OBJECTS += validate.o
 
  SYS_OBJECTS += mbed/TARGET_NUCLEO_F303K8/TOOLCHAIN_GCC_ARM/stm32f3xx_hal_smartcard.o
  SYS_OBJECTS += mbed/TARGET_NUCLEO_F303K8/TOOLCHAIN_GCC_ARM/PeripheralPins.o
@@ -312,7 +313,7 @@ ASM_FLAGS += -Imbed/platform
 
 LD_FLAGS :=-Wl,--gc-sections -Wl,--wrap,main -Wl,--wrap,_malloc_r -Wl,--wrap,_free_r -Wl,--wrap,_realloc_r -Wl,--wrap,_memalign_r -Wl,--wrap,_calloc_r -Wl,--wrap,exit -Wl,--wrap,atexit -Wl,-n --specs=nano.specs -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
 
-#LD_FLAGS += -u _printf_float
+LD_FLAGS += -u _printf_float
 #LD_FLAGS += -u _scanf_float
 
 LD_SYS_LIBS :=-Wl,--start-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys -lmbed -Wl,--end-group
