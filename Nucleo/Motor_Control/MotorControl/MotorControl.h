@@ -1,5 +1,7 @@
 /*
- * Davis Chen
+ * MotorControl.cpp
+ * Author: Davis Chen
+ * Last Revised: 2017/12/15
  */
 
 /* floats and seconds
@@ -14,9 +16,10 @@
 
 class MotorControl {
 	public:
-		// length of 1 PWM cycle (in microseconds)
+		// length of 1 PWM cycle in microseconds
 		static const int PWM_PERIOD_US = 1000;
-		static const int RAMP_STEPS = 100;
+		// number of steps to use when ramping up and ramping down
+		static const int RAMP_STEPS = 10;
 
 		enum State {rampUp, running, rampDown, stopped, off};
 
@@ -41,7 +44,7 @@ class MotorControl {
 		void start();
 
 		float getAmplitude() {return amplitude;}
-		float getDutyCycle() {return duty_cycle;}
+		float getMotorLevel() {return motor_level;}
 	private:
 		Timer timer;
 		int prevTime;
@@ -62,15 +65,15 @@ class MotorControl {
 
 		// Amplitude as a
 		float amplitude = 1.0;
-		float duty_cycle;
+		float motor_level;
 
 		bool ramp_up_phase_begin = true;
 		int ramp_up_wait_interval;
-		float ramp_up_duty_cycle_step;
+		float ramp_up_motor_level_step;
 
 		bool ramp_down_phase_begin = true;
 		int ramp_down_wait_interval;
-		float ramp_down_duty_cycle_step;
+		float ramp_down_motor_level_step;
 
 		bool running_phase_begin = true;
 		bool stopped_phase_begin = true;
