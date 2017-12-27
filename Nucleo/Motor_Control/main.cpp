@@ -1,20 +1,18 @@
 /*
  * Davis Chen
+ * Description: A simple program to test the MotorControl class
  */
 
 #include "mbed.h"
 #include "MotorControl.h"
 
 int main() {
-
-	MotorControl m1(D3, 0.5, 0.5, 0.5, 0.5, 0.2);
-	MotorControl m2(D9, 1, 1, 1, 1, 0.2);
-	m1.start();
-	m2.start();
+	// set each phase to be 0.5 seconds long, with an ammplitude of 100%
+	MotorControl motor1(D4, 0.5, 0.5, 0.5, 0.5, 1);
+	motor1.start();
 
 	while(1) {
-		m1.run();
-		m2.run();
-		// run other code here (check sensors, change parameters)
+		motor1.run();
+		// run other code here (check sensors, change motor cycle parameters)
 	}
 }

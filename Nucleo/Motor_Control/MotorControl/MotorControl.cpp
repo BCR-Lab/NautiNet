@@ -1,7 +1,7 @@
 /*
  * MotorControl.cpp
  * Author: Davis Chen
- * Last Revised: 2017/12/15
+ * Last Revised: 2017/12/30
  *
  * Description: This class is used to control the motor in a nautilus robot.
  * The motor is ramped up to a specfic speed, stays at that speed for a short while,
@@ -18,6 +18,7 @@
  * Return value: returns the amount of time in microseconds; 0 will be returned if input value is negative
  */
 static int seconds_to_microseconds(const float &n) {
+	// only allow non-negative time values
 	if (n < 0)
 		return 0;
 	// 1 million microseconds in a second
@@ -55,12 +56,13 @@ MotorControl::MotorControl(PinName pin, float rise_time_s, float on_time_s, floa
 	on_time_us(),
 	decay_time_us(),
 	off_time_us(),
-	amplitude(amplitude) {
+	amplitude() {
 
-	rise_time_us = seconds_to_microseconds(rise_time_s);
-	on_time_us = seconds_to_microseconds(on_time_s);
-	decay_time_us = seconds_to_microseconds(decay_time_s);
-	off_time_us = seconds_to_microseconds(off_time_s);
+	setRiseTime_s(rise_time_s);
+	setOnTime_s(on_time_s);
+	setDecayTime_s(decay_time_s);
+	setOffTime_s(off_time_s);
+	setAmplitude(amplitude);
 
 	motor_IN.period_us(PWM_PERIOD_US);
 	timer.start();
@@ -84,31 +86,35 @@ static float calculateDutyCycle(float motor_level) {
  * Note: rise_time_us can be set using the setRiseTime_s method
  */
 void MotorControl::rampUpMotor() {
-	// initialize phase variables
+	// initialize variables for this phase
 	// execute once at start of phase
-	if (ramp_up_phase_begin) {
-		ramp_up_phase_begin = false;
-		ramp_up_wait_interval = rise_time_us/RAMP_STEPS;
-		ramp_up_motor_level_step = amplitude/RAMP_STEPS;
-		motor_level = 0;
+	if (phase_begin) {
+		phase_begin = false;
+		wait_interval = rise_time_us/RAMP_STEPS;
+		motor_level_step = amplitude/RAMP_STEPS;
+		motor_level_error = motor_level_step/10;
+		current_step = 1;
+		motor_level = motor_level_step;
 		motor_IN.write(calculateDutyCycle(motor_level));
-		prevTime = timer.read_us();
-		phaseStartTime = prevTime;
 	}
 
 	currentTime = timer.read_us();
-	if (motor_level >= amplitude) {
-		// end phase, set state to next phase
-		currentState = running;
-		ramp_up_phase_begin = true;
-		printf("%d\n", currentTime-phaseStartTime);
-		return;
-	}
 
-	if (currentTime - prevTime >= ramp_up_wait_interval) {
-		// increment PWM duty cycle
+	// times are measured from the beginning of current phase to reduce time drift
+	if (currentTime - phaseStartTime >= wait_interval * current_step) {
+		// motor_level will never be equal to amplitude due to inaccuracies of floating point arithmetic
+		if (currentTime - phaseStartTime >= rise_time_us && motor_level >= amplitude - motor_level_error) {
+			// end phase, set state to next phase
+			currentState = running;
+			phase_begin = true;
+			phaseStartTime += rise_time_us;
+			//printf("%d\n", currentTime-phaseStartTime);
+			return;
+		}
 		prevTime = currentTime;
-		motor_level += ramp_up_motor_level_step;
+		// increment motor level
+		motor_level += motor_level_step;
+		current_step++;
 		motor_IN.write(calculateDutyCycle(motor_level));
 	}
 }
@@ -121,30 +127,33 @@ void MotorControl::rampUpMotor() {
  * Note: decay_time_us can be set using the setDecayTime_s method
  */
 void MotorControl::rampDownMotor() {
-	// initialize phase variables
+	// initialize variables for this phase
 	// execute once at start of phase
-	if (ramp_down_phase_begin) {
-		ramp_down_phase_begin = false;
-		ramp_down_wait_interval = decay_time_us/RAMP_STEPS;
-		ramp_down_motor_level_step = amplitude/RAMP_STEPS;
-		motor_level = amplitude;
+	if (phase_begin) {
+		phase_begin = false;
+		wait_interval = decay_time_us/RAMP_STEPS;
+		motor_level_step = amplitude/RAMP_STEPS;
+		motor_level_error = motor_level_step/10;
+		current_step = 1;
+		motor_level = amplitude - motor_level_step;
 		motor_IN.write(calculateDutyCycle(motor_level));
-		prevTime = timer.read_us();
-		phaseStartTime = prevTime;
 	}
 
 	currentTime = timer.read_us();
 
-	if (motor_level <= 0) {
-		// end phase, set state to next phase
-		currentState = stopped;
-		ramp_down_phase_begin = true;
-		return;
-	}
-	if (currentTime - prevTime >= ramp_down_wait_interval) {
+	if (currentTime - phaseStartTime >= wait_interval * current_step) {
+		if (currentTime - phaseStartTime >= decay_time_us && motor_level <= motor_level_error) {
+			// end phase, set state to next phase
+			currentState = stopped;
+			phase_begin = true;
+			phaseStartTime += decay_time_us;
+			//printf("%d\n", currentTime-phaseStartTime);
+			return;
+		}
 		// decrement PWM duty cycle
 		prevTime = currentTime;
-		motor_level -= ramp_down_motor_level_step;
+		motor_level -= motor_level_step;
+		current_step++;
 		motor_IN.write(calculateDutyCycle(motor_level));
 	}
 }
@@ -157,21 +166,20 @@ void MotorControl::rampDownMotor() {
  * Note: on_time_us can be set using the setOnTime_s method
  */
 void MotorControl::runMotor() {
-	// initialize phase variables
+	// initialize variables for this phase
 	// execute once at start of phase
-	if (running_phase_begin) {
-		running_phase_begin = false;
+	if (phase_begin) {
+		phase_begin = false;
 		motor_level = amplitude;
 		motor_IN.write(calculateDutyCycle(motor_level));
-		prevTime = timer.read_us();
-		phaseStartTime = prevTime;
 	}
 
 	currentTime = timer.read_us();
 	if (currentTime - phaseStartTime >= on_time_us) {
 		// end phase, set state to next phase
 		currentState = rampDown;
-		running_phase_begin = true;
+		phase_begin = true;
+		phaseStartTime += on_time_us;
 	}
 }
 
@@ -183,20 +191,19 @@ void MotorControl::runMotor() {
  * Note: off_time_us can be set using the setOffTime_s method
  */
 void MotorControl::stopMotor() {
-	// initialize phase variables
+	// initialize variables for this phase
 	// execute once at start of phase
-	if (stopped_phase_begin) {
-		stopped_phase_begin = false;
+	if (phase_begin) {
+		phase_begin = false;
 		motor_level = 0;
 		motor_IN.write(calculateDutyCycle(motor_level));
-		prevTime = timer.read_us();
-		phaseStartTime = prevTime;
 	}
 
 	currentTime = timer.read_us();
 	if (currentTime - phaseStartTime >= off_time_us) {
 		// end phase, set state to next phase
-		stopped_phase_begin = true;
+		phase_begin = true;
+		phaseStartTime += off_time_us;
 		if (repeat)
 			currentState = rampUp;
 		else
@@ -313,8 +320,6 @@ void MotorControl::run() {
  */
 void MotorControl::start() {
 	currentState = rampUp;
-	ramp_up_phase_begin = true;
-	running_phase_begin = true;
-	ramp_down_phase_begin = true;
-	stopped_phase_begin = true;
+	phase_begin = true;
+	phaseStartTime = timer.read_us();
 }
