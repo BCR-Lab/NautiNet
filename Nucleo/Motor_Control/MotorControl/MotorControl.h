@@ -62,20 +62,20 @@ class MotorControl {
 		PwmOut motor_IN;
 
 		State currentState;
-		bool repeat = true;
+		bool repeat = true; // set to true to repeat cycle
 
 		// length of each phase in microseconds
-		// each phase is set to 1 second by default
-		int rise_time_us = 1000000;
-		int on_time_us = 1000000;
-		int decay_time_us = 1000000;
-		int off_time_us = 1000000;
+		int rise_time_us;
+		int on_time_us;
+		int decay_time_us;
+		int off_time_us;
 
 		// Maximum amplitude of the cycle (valid values from 0 to 1.0)
-		float amplitude = 1.0;
+		float amplitude;
+		// The current output level of the motor (must be <= amplitude)
 		float motor_level;
 
-		bool phase_begin = true;
+		bool phase_begin = true; // indicate whether it is the beginning of the phase
 		int wait_interval; // time interval between steps
 		float motor_level_step; // size of step when ramping up or down
 		float motor_level_error; // used to avoid problems caused by floating point arithmetic

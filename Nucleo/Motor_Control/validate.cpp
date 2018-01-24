@@ -9,70 +9,45 @@
 Serial pc(SERIAL_TX, SERIAL_RX);
 
 int main() {
-	pc.baud(57600);
+	pc.baud(57600); // set to higher baud rate for faster transmit times
 	Timer t;
 	t.start();
 
-	float rise = 0.01, running = 0.01, decay = 0.01, wait = 0.01;
+	float rise = 0.01, running = 0.01, decay = 0.01, wait_t = 0.01;
 	float amplitude = 1.0;
 	const int cycles = 100;
 	const int samples_per_phase = 2;
-	int period = (rise + running + decay + wait) * 1000000 * cycles;
-	MotorControl m(D3, rise, running, decay, wait, amplitude);
-	//m.setRepeat(false);
+	int period = (rise + running + decay + wait_t) * 1000000 * cycles;
+	MotorControl motor(D3, rise, running, decay, wait_t, amplitude);
 
-	// Need to disable repeat and manually restart with start() after every cycle because printing to serial is very slow and would cause timing issues
+	// Only a limited amount of data can be stored due to limited memory on the microcontroller. Datamust be printed out before collecting more data.
+	// Need to manually restart with start() after printing because printing to serial is very slow and would cause timing issues with future measurements
 
-	int prev_time, current_time, start_time;
-	const int sample_count = cycles * samples_per_phase * 4;
-	int sample_interval = period / (sample_count);
+	int current_time, start_time;
+	const int sample_count = cycles * samples_per_phase * 4; // total number of measurments
+	int sample_interval = period / (sample_count); // time between measurements
+	float data[sample_count];
 
-	/*
-	float times[4] = {0.001, 0.01, 0.1, 1};
-
-	for (int i=0; i<4; i++) {
-		int test_time = times[i]*110*1000000;
-		m.setRiseTime_s(times[i]);
-		printf("Rise time: %0.2f\n", times[i]);
-		printf("Amplitude: %0.2f\n", amplitude);
-		start_time = t.read_us();
-		current_time = start_time;
-		m.start();
-		while (current_time - start_time < test_time) {
-			m.run();
-			current_time = t.read_us();
-		}
-	}
-	*/
-	printf("Rise time: %0.2f On time: %0.2f Decay time: %0.2f Off time: %0.2f\n", rise, running, decay, wait);
+	printf("Rise time: %0.2f On time: %0.2f Decay time: %0.2f Off time: %0.2f\n", rise, running, decay, wait_t);
 	printf("Amplitude: %0.2f\n", amplitude);
 
-	struct t_data {
-		int time;
-		float level;
-	};
-
-	for (int j=0; j< 1; j++) {
+	for (int j=0; j< 10; j++) {
 		int i=0;
-		float a[sample_count];
-		prev_time = t.read_us();
-		start_time = prev_time;
-		m.start();
+		start_time = t.read_us() - 40; // offset measurement times to measure between value changes
+		motor.start();
 		while (i < sample_count) {
-			m.run();
+			motor.run();
 			current_time = t.read_us();
 			if (current_time - start_time >= sample_interval*(1+i)) {
-				a[i] = m.getMotorLevel();
-				//prev_time = current_time;
+				// take measurement
+				data[i] = motor.getMotorLevel();
 				i++;
 			}
 		}
-		current_time = t.read_us();
 
-		//printf("Time taken: %d\n", current_time - start_time);
-		// print values from cycle
+		// print collected measurements
 		for (int k=0; k < sample_count; k++)
-			printf("%0.2f\t", a[k]);
+			printf("%0.2f\t", data[k]);
 		printf("\n");
 	}
 

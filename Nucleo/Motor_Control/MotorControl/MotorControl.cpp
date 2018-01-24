@@ -32,6 +32,12 @@ static int seconds_to_microseconds(const float &n) {
  * Return value: N/A
  */
 MotorControl::MotorControl(PinName pin) : motor_IN(pin){
+	// set each phase to 1 second by default
+	rise_time_us = 1000000;
+	on_time_us = 1000000;
+	decay_time_us = 1000000;
+	off_time_us = 1000000;
+	amplitude = 1.0;
 	// start internal timer
 	timer.start();
 	// set PWM frequency
