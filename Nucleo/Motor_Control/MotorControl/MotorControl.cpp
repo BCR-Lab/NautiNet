@@ -3,10 +3,13 @@
  * Author: Davis Chen
  * Last Revised: 2017/12/30
  *
- * Description: This class is used to control the motor in a nautilus robot.
+ * Description: This class is used to control the motor in a nautilus robot via the
+ * STM32F303 Nucleo microcontroller and the DRV8871 motor driver.
  * The motor is ramped up to a specfic speed, stays at that speed for a short while,
  * and ramps back down. After a short delay, the cycle begins again.
- * All parameters can be set by the calling program.
+ * The calling program can set the duration of each of these phases as well as
+ * the maximum amplitude.
+ *
  */
 
 #include "MotorControl.h"
@@ -114,7 +117,6 @@ void MotorControl::rampUpMotor() {
 			currentState = running;
 			phase_begin = true;
 			phaseStartTime += rise_time_us;
-			//printf("%d\n", currentTime-phaseStartTime);
 			return;
 		}
 		prevTime = currentTime;
@@ -153,7 +155,6 @@ void MotorControl::rampDownMotor() {
 			currentState = stopped;
 			phase_begin = true;
 			phaseStartTime += decay_time_us;
-			//printf("%d\n", currentTime-phaseStartTime);
 			return;
 		}
 		// decrement PWM duty cycle
@@ -261,10 +262,49 @@ void MotorControl::setOffTime_s(const float &time_s) {
 	off_time_us = seconds_to_microseconds(time_s);
 }
 
-void MotorControl::setRiseTime_us(const int &time_s){}
-void MotorControl::setDecayTime_us(const int &time_s){}
-void MotorControl::setOnTime_us(const int &time_s){}
-void MotorControl::setOffTime_us(const int &time_s){}
+/*
+ * Function name: setRiseTime_us
+ * Description: Sets the length of the ramp up phase
+ * Arguments: time_us - time in microseconds
+ * Return value: N/A
+ * Note: if time_us is negative, the length of the phase will be 0
+ */
+void MotorControl::setRiseTime_us(const int &time_us){
+	rise_time_us = (time_us > 0) ? time_us : 0;
+}
+
+/*
+ * Function name: setDecayTime_us
+ * Description: Sets the length of the ramp down phase
+ * Arguments: time_us - time in microseconds
+ * Return value: N/A
+ * Note: if time_us is negative, the length of the phase will be 0
+ */
+void MotorControl::setDecayTime_us(const int &time_us){
+	decay_time_us = (time_us > 0) ? time_us : 0;
+}
+
+/*
+ * Function name: setOnTime_us
+ * Description: Sets the length of the running phase
+ * Arguments: time_us - time in microseconds
+ * Return value: N/A
+ * Note: if time_us is negative, the length of the phase will be 0
+ */
+void MotorControl::setOnTime_us(const int &time_us){
+	on_time_us = (time_us > 0) ? time_us : 0;
+}
+
+/*
+ * Function name: setOffTime_us
+ * Description: Sets the length of the stopped phase
+ * Arguments: time_us - time in microseconds
+ * Return value: N/A
+ * Note: if time_us is negative, the length of the phase will be 0
+ */
+void MotorControl::setOffTime_us(const int &time_us){
+	off_time_us = (time_us > 0) ? time_us : 0;
+}
 
 /*
  * Function name: setAmplitude

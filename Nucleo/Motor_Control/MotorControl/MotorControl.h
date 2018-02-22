@@ -72,7 +72,7 @@ class MotorControl {
 
 		// Maximum amplitude of the cycle (valid values from 0 to 1.0)
 		float amplitude;
-		// The current output level of the motor (must be <= amplitude)
+		// The current output level of the motor (must be less than or equal to amplitude)
 		float motor_level;
 
 		bool phase_begin = true; // indicate whether it is the beginning of the phase

@@ -1,5 +1,7 @@
 User Documentation
 ========
+This software is intended to be used with the STM32F303 Nucleo microcontroller.
+
 ## Software Requirements
 1. The development computer must have the proper device drivers 
 installed in order for it to recognize and upload software to the 
