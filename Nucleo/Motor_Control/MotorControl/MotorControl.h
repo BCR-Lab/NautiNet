@@ -19,7 +19,7 @@
 class MotorControl {
 	public:
 		// length of 1 PWM cycle in microseconds
-		static const int PWM_PERIOD_US = 1000;
+		static const int PWM_PERIOD_US = 100;
 		// number of steps to use when ramping up and ramping down
 		static const int RAMP_STEPS = 100;
 

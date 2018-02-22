@@ -47,8 +47,8 @@ PROJECT := NautiNet_Motor_Control
 # Objects and Paths
 
 OBJECTS += MotorControl/MotorControl.o
-#OBJECTS += main.o
-OBJECTS += validate.o
+OBJECTS += main.o
+#OBJECTS += validate.o
 
  SYS_OBJECTS += mbed/TARGET_NUCLEO_F303K8/TOOLCHAIN_GCC_ARM/stm32f3xx_hal_smartcard.o
  SYS_OBJECTS += mbed/TARGET_NUCLEO_F303K8/TOOLCHAIN_GCC_ARM/PeripheralPins.o
